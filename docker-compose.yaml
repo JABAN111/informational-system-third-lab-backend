@@ -1,0 +1,13 @@
+#psql -h localhost -p 5432 -U user -d habrdb
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "habrdb"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "user"
+
+    ports:
+      - "23210:5432"
+
