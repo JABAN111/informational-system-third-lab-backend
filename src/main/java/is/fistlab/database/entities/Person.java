@@ -1,6 +1,6 @@
-package is.fistlab.DataBase.Entity;
+package is.fistlab.database.entities;
 
-import is.fistlab.DataBase.Enums.Color;
+import is.fistlab.database.enums.Color;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

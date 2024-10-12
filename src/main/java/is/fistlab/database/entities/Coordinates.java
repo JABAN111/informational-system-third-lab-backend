@@ -1,4 +1,4 @@
-package is.fistlab.DataBase.Entity;
+package is.fistlab.database.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

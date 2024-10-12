@@ -1,4 +1,4 @@
-package is.fistlab.DataBase.Enums;
+package is.fistlab.database.enums;
 
 public enum FormOfEducation {
     DISTANCE_EDUCATION,

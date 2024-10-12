@@ -1,12 +1,12 @@
-package is.fistlab.DataBase.Entity;
+package is.fistlab.database.entities;
 
-import is.fistlab.DataBase.Enums.FormOfEducation;
-import is.fistlab.DataBase.Enums.Semester;
+import is.fistlab.database.enums.FormOfEducation;
+import is.fistlab.database.enums.Semester;
 import jakarta.persistence.*;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.ToString;
 
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @NoArgsConstructor
-@Slf4j
+@ToString
 public class StudyGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
