@@ -56,7 +56,11 @@ public class StudyGroup {
     @OneToOne(optional = false)
     private Person groupAdmin; //Поле не может быть null
 
+    @OneToOne(optional = false)
+    private TimeStamp timeStamp;
+
     @PrePersist
+    @PreUpdate
     protected void onCreate() {
         this.creationDate = LocalDate.now();
     }

@@ -3,6 +3,7 @@ package is.fistlab.services.impl;
 import is.fistlab.database.entities.User;
 import is.fistlab.database.repositories.UserRepository;
 import is.fistlab.services.UserService;
+import is.fistlab.utils.PasswordProcessing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final String SALT = "D&D";
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,16 +24,21 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void registerUser(User user) {
-        userRepository.save(user);
+    public User createNewUser(User user) {
+        user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
+        User newUser = userRepository.save(user);
         log.info("{} registered successfully",user.getUsername());
+
+        return newUser;
     }
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public User updateUser(User user) {
         userRepository.getReferenceById(user.getId());
-        userRepository.save(user);
+        user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
+        User newUser = userRepository.save(user);
         log.info("{} updated successfully",user.getUsername());
+        return newUser;
     }
 
     @Transactional
