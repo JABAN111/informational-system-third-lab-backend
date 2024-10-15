@@ -6,6 +6,7 @@ import is.fistlab.services.UserService;
 import is.fistlab.utils.PasswordProcessing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final String SALT = "D&D";
+    private final static String SALT = "D&D";
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -26,6 +27,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createNewUser(User user) {
         user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
+
+
         User newUser = userRepository.save(user);
         log.info("{} registered successfully",user.getUsername());
 
@@ -57,5 +60,29 @@ public class UserServiceImpl implements UserService {
         }
         log.error("User with id: {} not found", id);
         return null;
+    }
+
+    @Override
+    public boolean isUserExists(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user != null) {
+            log.info("User with username: {} found", username);
+            return true;
+        }
+        log.error("User with username: {} not found", username);
+        return false;
+    }
+
+    @Override
+    public User getUser(User user) {
+        if (!isUserExists(user.getUsername())){
+            return null;//todo добавить кастомные ошибки
+//            throw new ChangeSetPersister.NotFoundException("User with username: " + user.getUsername() + " not found");
+        }
+        return userRepository.findByUsername(user.getUsername());
+    }
+
+    public static String passwordToHash(String password) {
+        return PasswordProcessing.encryptPassword(password,SALT.getBytes());
     }
 }

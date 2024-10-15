@@ -7,4 +7,6 @@ public interface UserService {
     User updateUser(User user);
     void deleteUser(Long id);
     User getUser(Long id);
+    User getUser(User user);
+    boolean isUserExists(String username);
 }
