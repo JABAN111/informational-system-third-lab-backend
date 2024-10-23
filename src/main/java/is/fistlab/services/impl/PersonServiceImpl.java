@@ -3,6 +3,8 @@ package is.fistlab.services.impl;
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.exceptions.auth.UserNotFoundException;
+import is.fistlab.exceptions.person.InvalidActionException;
+import is.fistlab.exceptions.person.PersonNotExistException;
 import is.fistlab.exceptions.person.PersonNotUnique;
 import is.fistlab.services.PersonService;
 import lombok.AllArgsConstructor;
@@ -56,9 +58,21 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional
     @Override
-    public void deletePerson(Person person) {
-        personRepository.delete(person);
-        log.info("Deleted person: {}", person);
+    public void deletePersonById(Long id) {
+        if(!personRepository.existsById(id)){
+            log.error("Person with id: {} does not exist", id);
+            throw new PersonNotExistException("Пользователя с таким id не существует");
+        }
+
+        long cntOfAdministrating = personRepository.countStudyGroupsByPersonId(id);
+        if(cntOfAdministrating > 0){
+            log.error("Person are connected with {}", cntOfAdministrating);
+            throw new InvalidActionException("Невозможно удалить этого человека, " +
+                    "так как он является админом админом " + cntOfAdministrating +" групп");
+        }
+
+        personRepository.deleteById(id);
+        log.info("Deleted person: {}", id);
     }
 
     @Override

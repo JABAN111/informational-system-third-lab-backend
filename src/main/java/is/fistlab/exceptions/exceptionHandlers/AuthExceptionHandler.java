@@ -1,4 +1,4 @@
-package is.fistlab.exceptionHandlers;
+package is.fistlab.exceptions.exceptionHandlers;
 
 import is.fistlab.exceptions.auth.UserConflictException;
 import is.fistlab.exceptions.auth.UserNotFoundException;

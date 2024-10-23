@@ -4,7 +4,7 @@ import is.fistlab.Utils;
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.enums.Color;
 import is.fistlab.dto.PersonDto;
-import is.fistlab.mappers.exceptions.InvalidFieldException;
+import is.fistlab.exceptions.mappers.InvalidFieldException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

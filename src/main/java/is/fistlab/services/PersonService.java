@@ -8,6 +8,6 @@ public interface PersonService {
     Person getPersonById(Long id);
     boolean isPersonExist(Person person);
     Person createPerson(Person person);
-    void deletePerson(Person person);
+    void deletePersonById(Long id);
     List<Person> getAllPersons();
 }
