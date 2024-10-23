@@ -1,4 +1,4 @@
-package is.fistlab.dto.mappers.exceptions;
+package is.fistlab.mappers.exceptions;
 
 public class InvalidFieldException extends RuntimeException {
     public InvalidFieldException(String message) {

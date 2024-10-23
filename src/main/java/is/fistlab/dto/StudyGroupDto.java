@@ -1,7 +1,6 @@
 package is.fistlab.dto;
 
 import is.fistlab.database.entities.Coordinates;
-import is.fistlab.database.entities.Person;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 public class StudyGroupDto {
+
     private Long id;
 
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -36,7 +36,7 @@ public class StudyGroupDto {
 
     private String semesterEnum; //Поле может быть null
 
-    private Person groupAdmin; //Поле не может быть null
+    private PersonDto groupAdmin; //Поле не может быть null
 
 
 }
