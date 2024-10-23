@@ -6,6 +6,7 @@ import is.fistlab.mappers.StudyGroupMapper;
 import is.fistlab.services.StudyGroupService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,5 +28,11 @@ public class StudyGroupController {
     @GetMapping("/get-all-groups")
     public List<StudyGroup> getAllStudyGroups() {
         return studyGroupService.getAllStudyGroups();
+    }
+
+    @DeleteMapping("/delete-group-by-id/{id}")
+    public ResponseEntity<String> deleteStudyGroupById(@PathVariable Long id) {
+        studyGroupService.deleteStudyGroup(id);
+        return ResponseEntity.ok("Deleted group with id " + id);
     }
 }

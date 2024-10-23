@@ -2,12 +2,10 @@ package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.repositories.PersonRepository;
-import is.fistlab.exceptions.auth.UserNotFoundException;
-import is.fistlab.exceptions.person.InvalidActionException;
-import is.fistlab.exceptions.person.PersonNotExistException;
-import is.fistlab.exceptions.person.PersonNotUnique;
+import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
+import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
+import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
 import is.fistlab.services.PersonService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

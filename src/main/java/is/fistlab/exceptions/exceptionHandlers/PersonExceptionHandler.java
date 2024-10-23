@@ -1,8 +1,8 @@
 package is.fistlab.exceptions.exceptionHandlers;
 
-import is.fistlab.exceptions.person.InvalidActionException;
-import is.fistlab.exceptions.person.PersonNotExistException;
-import is.fistlab.exceptions.person.PersonNotUnique;
+import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
+import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
+import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

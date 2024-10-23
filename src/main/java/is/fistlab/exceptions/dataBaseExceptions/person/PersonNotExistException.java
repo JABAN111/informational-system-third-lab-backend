@@ -1,4 +1,4 @@
-package is.fistlab.exceptions.person;
+package is.fistlab.exceptions.dataBaseExceptions.person;
 
 public class PersonNotExistException extends RuntimeException {
     public PersonNotExistException(String message) {

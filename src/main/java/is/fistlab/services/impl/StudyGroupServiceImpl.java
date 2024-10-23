@@ -2,6 +2,7 @@ package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.database.repositories.StudyGroupRepository;
+import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
 import is.fistlab.services.StudyGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,11 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Transactional
     @Override
     public void deleteStudyGroup(Long id) {
+        if(!studyGroupRepository.existsById(id)) {
+            log.error("Study group does not exist: {}", id);
+            throw new StudyGroupNotExistException("Такой группы не существует");
+        }
+
         studyGroupRepository.deleteById(id);
         log.info("Deleted StudyGroup with id: {}", id);
     }
