@@ -24,8 +24,7 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Transactional
     @Override
     public StudyGroup createStudyGroup(StudyGroup studyGroup) {
-
-        log.debug("Study group created: {}",studyGroup);
+        log.info("Study group created: {}",studyGroup);
         return studyGroupRepository.save(studyGroup);
     }
 

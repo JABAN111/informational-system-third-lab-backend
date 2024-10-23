@@ -1,7 +1,8 @@
 package is.fistlab.controllers;
 
-import com.google.gson.Gson;
 import is.fistlab.database.entities.Person;
+import is.fistlab.dto.PersonDto;
+import is.fistlab.mappers.PersonMapper;
 import is.fistlab.services.PersonService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,7 +29,8 @@ public class PersonController {
 
 
     @PostMapping("/create-person")
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+    public ResponseEntity<Person> createPerson(@RequestBody PersonDto dto) {
+        Person person = PersonMapper.toEntity(dto);
         personService.createPerson(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
