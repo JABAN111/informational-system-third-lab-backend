@@ -1,8 +1,8 @@
 package is.fistlab.database.entities;
 
+import is.fistlab.database.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -24,20 +24,25 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-    @OneToOne
-    @JoinColumn(nullable = true, unique = true)
-    private Person person;
+//    @OneToOne(cascade = CascadeType.PERSIST)
+//    @JoinColumn(nullable = false, unique = true)
+//    private Person person;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(person, user.person);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);// && Objects.equals(person, user.person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, person);
+        return Objects.hash(id, username);//, person);
     }
 
 }

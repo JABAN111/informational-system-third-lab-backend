@@ -1,6 +1,6 @@
 package is.fistlab.database.enums;
 
-public enum UserRoles {
-    STUDENT,
+public enum UserRole {
+    USUAL_USER,
     SUPER_USER
 }

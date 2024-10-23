@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
             log.info("User with username: {} found", username);
             return true;
         }
-        log.error("User with username: {} not found", username);
+        log.info("User with username: {} not found", username);
         return false;
     }
 
