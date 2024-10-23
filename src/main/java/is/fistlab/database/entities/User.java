@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Objects;
-
 @Data
 @Entity
 @NoArgsConstructor
@@ -21,28 +19,11 @@ public class User {
     @Column(nullable = false,unique = true)
     private String username;
 
-
     @Column(nullable = false)
     private String password;
-//    @OneToOne(cascade = CascadeType.PERSIST)
-//    @JoinColumn(nullable = false, unique = true)
-//    private Person person;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username);// && Objects.equals(person, user.person);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username);//, person);
-    }
 
 }
