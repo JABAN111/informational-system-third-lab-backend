@@ -74,6 +74,18 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public Person updatePerson(Person person) {
+        if(!personRepository.existsById(person.getId())){
+            log.error("Person with id: {} does not exist, update is impossible", person.getId());
+            throw new PersonNotExistException("Пользователь не найден");
+        }
+
+        var updatedPerson = personRepository.save(person);
+        log.info("Updated person: {}", updatedPerson);
+        return person;
+    }
+
+    @Override
     public List<Person> getAllPersons() {
         return personRepository.findAll();
     }

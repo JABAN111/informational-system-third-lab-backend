@@ -35,6 +35,13 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
+    @PostMapping("/update-user")
+    public ResponseEntity<Person> updatePerson(@RequestBody PersonDto dto) {
+        Person person = PersonMapper.toEntity(dto);
+        var updatedPerson = personService.updatePerson(person);
+        return ResponseEntity.ok(updatedPerson);
+    }
+
     @DeleteMapping("delete-person-by-id/{id}")
     public ResponseEntity<String> deletePersonById(@PathVariable Long id) {
         log.info("Deleting person by id: {}", id);
