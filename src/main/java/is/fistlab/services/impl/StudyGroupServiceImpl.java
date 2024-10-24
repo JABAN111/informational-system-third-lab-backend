@@ -2,6 +2,7 @@ package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.database.repositories.StudyGroupRepository;
+import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
 import is.fistlab.services.StudyGroupService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,11 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Transactional
     @Override
     public StudyGroup createStudyGroup(StudyGroup studyGroup) {
+        if(studyGroup.getId() != null && studyGroupRepository.existsById(studyGroup.getId())) {
+            log.error("Study group with id {} already exists", studyGroup.getId());
+            throw new StudyGroupAlreadyExistException("Study group with id " + studyGroup.getId() + " already exists");
+        }
+
         log.info("Study group created: {}",studyGroup);
         return studyGroupRepository.save(studyGroup);
     }

@@ -56,7 +56,7 @@ public class StudyGroup {
     @Column(nullable = false)
     private Semester semesterEnum; //Поле может быть null
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Person groupAdmin; //Поле не может быть null
 
     @PrePersist
