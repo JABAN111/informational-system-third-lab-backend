@@ -1,11 +1,14 @@
 package is.fistlab.mappers;
 
-import is.fistlab.Utils;
+import is.fistlab.utils.Utils;
+import is.fistlab.database.entities.Country;
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.enums.Color;
 import is.fistlab.dto.PersonDto;
 import is.fistlab.exceptions.mappers.InvalidFieldException;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 @Slf4j
 public class PersonMapper {
@@ -43,7 +46,7 @@ public class PersonMapper {
             }
         }
 
-        if (dto.getLocation() == null) {
+        if (Objects.isNull(dto.getLocation())) {
             log.error("Location cannot be null");
             throw new InvalidFieldException("Местоположение не может быть пустым");
         }
@@ -60,6 +63,19 @@ public class PersonMapper {
             throw new InvalidFieldException("Вес должен быть больше 0");
         }
         person.setWeight(dto.getWeight());
+
+        if(Utils.isEmptyOrNull(dto.getNationality())) {
+            log.error("Nationality cannot be empty");
+            throw new InvalidFieldException("Поле национальность обязательная");
+        }
+        if(Objects.nonNull(dto.getNationality())){
+            try{
+                person.setNationality(Country.valueOf(dto.getNationality()));
+            }catch(IllegalArgumentException e){
+                log.error("Invalid nationality: {}", dto.getNationality());
+                throw new InvalidFieldException("Национальность: " + dto.getNationality() +" недоступна");
+            }
+        }
 
         if (Utils.isEmptyOrNull(dto.getPassportID()) || dto.getPassportID().length() < 10) {
             log.error("Passport ID must be at least 10 characters long");

@@ -35,7 +35,7 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
-    @PostMapping("/update-user")
+    @PostMapping("/update-person")
     public ResponseEntity<Person> updatePerson(@RequestBody PersonDto dto) {
         Person person = PersonMapper.toEntity(dto);
         var updatedPerson = personService.updatePerson(person);

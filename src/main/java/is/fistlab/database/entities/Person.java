@@ -31,6 +31,9 @@ public class Person {
     private int height; //Значение поля должно быть больше 0
     @Min(1)
     private long weight; //Значение поля должно быть больше 0
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Country nationality; //Поле не может быть null
     @Column(nullable = false, unique = true)
     @Size(min = 10)
     //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример ису ид)

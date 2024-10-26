@@ -1,4 +1,4 @@
-package is.fistlab;
+package is.fistlab.utils;
 
 public class Utils {
 

@@ -1,6 +1,6 @@
 package is.fistlab.mappers;
 
-import is.fistlab.Utils;
+import is.fistlab.utils.Utils;
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.database.enums.FormOfEducation;
