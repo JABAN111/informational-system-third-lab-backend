@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle 1.0//EN">
+<!--        "https://checkstyle.sourceforge.io/dtds/checkstyle-1.0.dtd">-->
+
+<module name="Checker">
+    <module name="TreeWalker">
+        <module name="WhitespaceAround"/>
+        <module name="FileTabCharacter"/>
+        <module name="LineLength">
+            <property name="max" value="120"/>
+        </module>
+    </module>
+</module>
