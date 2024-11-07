@@ -1,7 +1,6 @@
-package is.fistlab.services.impl;
+package is.fistlab.security;
 
 import is.fistlab.database.entities.User;
-import is.fistlab.services.JwtService;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,10 +79,11 @@ public class JwtServiceImpl implements JwtService {
      * @param userDetails данные пользователя
      * @return токен
      */
+    //todo обновить все эти методы
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 100_000 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 

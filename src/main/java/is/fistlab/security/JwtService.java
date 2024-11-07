@@ -1,4 +1,4 @@
-package is.fistlab.services;
+package is.fistlab.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
