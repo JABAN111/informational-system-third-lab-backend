@@ -20,14 +20,28 @@
     <properties>
         <java.version>17</java.version>
         <lombok.version>1.18.22</lombok.version>
+        <spring-boot.version>3.3.4</spring-boot.version>
+        <springframefork.context>6.1.14</springframefork.context>
+        <postgresql.version>42.5.4</postgresql.version>
+        <eclipselink.version>2.7.9</eclipselink.version>
+        <jakarta.validation.version>2.0.2</jakarta.validation.version>
+        <gson.version>2.10.1</gson.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${springframefork.context}</version>
+        </dependency>
 
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <!-- Spring Boot Devtools -->
@@ -36,6 +50,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <!-- PostgreSQL Driver -->
@@ -57,56 +72,56 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <!-- EclipseLink -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa</artifactId>
-            <version>2.7.9</version>
+            <version>${eclipselink.version}</version>
         </dependency>
 
         <!-- Jakarta Validation API -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>2.0.2</version>
+            <version>${jakarta.validation.version}</version>
         </dependency>
 
         <!-- Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
-<!--        json-->
+        <!-- Gson (JSON) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.10.1</version>
+            <version>${gson.version}</version>
         </dependency>
 
         <!-- JUnit for testing -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-test</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
+        <!-- JWT (JSON Web Token) -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
 
     </dependencies>
@@ -129,25 +144,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-checkstyle-plugin</artifactId>-->
-<!--                <version>3.2.1</version>-->
-<!--                <configuration>-->
-<!--                    <configLocation>checkstyle.xml</configLocation>-->
-<!--                    <encoding>UTF-8</encoding>-->
-<!--                    <failsOnError>true</failsOnError>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>validate</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>check</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 
