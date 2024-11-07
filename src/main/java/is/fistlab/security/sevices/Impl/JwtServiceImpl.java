@@ -1,7 +1,8 @@
-package is.fistlab.security;
+package is.fistlab.security.sevices.Impl;
 
 import is.fistlab.database.entities.User;
 
+import is.fistlab.security.sevices.JwtService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Value;
 

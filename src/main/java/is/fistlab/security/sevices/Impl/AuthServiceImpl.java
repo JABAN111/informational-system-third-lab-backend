@@ -1,9 +1,11 @@
-package is.fistlab.security;
+package is.fistlab.security.sevices.Impl;
 
 import is.fistlab.database.entities.User;
 import is.fistlab.database.enums.UserRole;
 import is.fistlab.dto.JwtAuthenticationResponse;
 import is.fistlab.dto.UserDto;
+import is.fistlab.security.sevices.AuthService;
+import is.fistlab.security.sevices.JwtService;
 import is.fistlab.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
