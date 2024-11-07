@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-
+@Service
 public class JwtServiceImpl implements JwtService {
     @Value("${token.signing.key}")
     private String jwtSigningKey;
@@ -42,6 +43,7 @@ public class JwtServiceImpl implements JwtService {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User customUserDetails) {
             claims.put("id", customUserDetails.getId());
+            claims.put("username", customUserDetails.getUsername());
             claims.put("role", customUserDetails.getRole());
         }
         return generateToken(claims, userDetails);
