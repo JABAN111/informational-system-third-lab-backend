@@ -5,6 +5,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
+          <factory-entry name="FistLab" value="ac28040c-e7cd-457b-972d-d43bbb4986a2" />
           <factory-entry name="entityManagerFactory" value="ac28040c-e7cd-457b-972d-d43bbb4986a2" />
         </datasource-mapping>
         <naming-strategy-map />
