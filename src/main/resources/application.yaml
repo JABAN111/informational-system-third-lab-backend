@@ -19,13 +19,18 @@ spring:
             level: FINE
             file: stdout
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
 
 server:
   error:
+    include-stacktrace: never
     whitelabel:
       enabled: false
 
   web:
     resources:
       add-mappings: false
+
+token:
+  signing:
+    key: Q5v1CXQ1Y64cayU84BnlR3Az9fVFe8Bvn6Mrf68bX5U=
