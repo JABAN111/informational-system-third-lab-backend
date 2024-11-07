@@ -1,5 +1,6 @@
 package is.fistlab.security;
 
+import is.fistlab.security.sevices.JwtService;
 import is.fistlab.services.UserService;
 
 import jakarta.servlet.FilterChain;

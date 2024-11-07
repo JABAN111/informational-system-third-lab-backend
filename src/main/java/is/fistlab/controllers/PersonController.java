@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/person")
+@RequestMapping("/api/v1/auth/person")
 @Slf4j
 @CrossOrigin
 @AllArgsConstructor

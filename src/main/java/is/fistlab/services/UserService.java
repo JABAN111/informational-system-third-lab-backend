@@ -12,5 +12,7 @@ public interface UserService {
     User getUser(User user);
     boolean isUserExists(String username);
 
+    String passwordToHash(String password);
+
     UserDetailsService getUserDetailsService();
 }
