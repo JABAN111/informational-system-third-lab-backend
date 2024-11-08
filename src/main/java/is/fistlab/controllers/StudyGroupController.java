@@ -34,4 +34,9 @@ public class StudyGroupController {
         studyGroupService.deleteStudyGroup(id);
         return ResponseEntity.ok("Deleted group with id " + id);
     }
+
+    @PatchMapping("/update-group-by-id/{id}")
+    public ResponseEntity<StudyGroup> updateStudyGroupById(@PathVariable Long id, @RequestBody StudyGroupDto dto) {
+        return ResponseEntity.ok(studyGroupService.updateStudyGroup(id, dto));
+    }
 }
