@@ -52,14 +52,20 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Transactional
     @Override
     public StudyGroup updateStudyGroup(Long id,StudyGroupDto dto) {
+        Optional<StudyGroup> optionalStudyGroup = studyGroupRepository.findById(id);
 
+        if(optionalStudyGroup.isEmpty()) {
+            log.error("Study group with id {} does not exist", id);
+            throw new StudyGroupNotExistException("Study group with id " + id + " does not exist");
+        }
 
+        var newStudyGroup = StudyGroupMapper.toEntity(dto);
+        newStudyGroup.setId(id);
 
-        //check whether it exist or not
-        StudyGroup studGroupToUpdate = studyGroupRepository.getReferenceById(studyGroup.getId());
-        studyGroupRepository.save(studGroupToUpdate);
-        log.info("Study group updated: {}", studyGroup);
-        return studGroupToUpdate;
+        studyGroupRepository.save(newStudyGroup);
+        log.info("Study group updated: {}", newStudyGroup);
+
+        return newStudyGroup;
     }
     @Transactional
     @Override
