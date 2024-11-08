@@ -13,7 +13,6 @@ import java.util.List;
 
 @Slf4j
 @RequestMapping("/api/v1/manage/study-groups")
-@CrossOrigin
 @RestController
 @AllArgsConstructor
 public class StudyGroupController {
@@ -36,7 +35,7 @@ public class StudyGroupController {
     }
 
     @PatchMapping("/update-group-by-id/{id}")
-    public ResponseEntity<StudyGroup> updateStudyGroupById(@PathVariable Long id, @RequestBody StudyGroupDto dto) {
+    public ResponseEntity<StudyGroup> updateStudyGroupById(@PathVariable Long id,@RequestBody StudyGroupDto dto) {
         return ResponseEntity.ok(studyGroupService.updateStudyGroup(id, dto));
     }
 }
