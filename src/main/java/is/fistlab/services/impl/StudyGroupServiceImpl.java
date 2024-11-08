@@ -2,8 +2,10 @@ package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.database.repositories.StudyGroupRepository;
+import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
+import is.fistlab.mappers.StudyGroupMapper;
 import is.fistlab.services.StudyGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,8 @@ public class StudyGroupServiceImpl implements StudyGroupService {
 
     @Transactional
     @Override
-    public StudyGroup createStudyGroup(StudyGroup studyGroup) {
+    public StudyGroup createStudyGroup(StudyGroupDto dto) {
+        StudyGroup studyGroup = StudyGroupMapper.toEntity(dto);
         if(studyGroup.getId() != null && studyGroupRepository.existsById(studyGroup.getId())) {
             log.error("Study group with id {} already exists", studyGroup.getId());
             throw new StudyGroupAlreadyExistException("Study group with id " + studyGroup.getId() + " already exists");
@@ -48,7 +51,10 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     }
     @Transactional
     @Override
-    public StudyGroup updateStudyGroup(StudyGroup studyGroup) {
+    public StudyGroup updateStudyGroup(Long id,StudyGroupDto dto) {
+
+
+
         //check whether it exist or not
         StudyGroup studGroupToUpdate = studyGroupRepository.getReferenceById(studyGroup.getId());
         studyGroupRepository.save(studGroupToUpdate);

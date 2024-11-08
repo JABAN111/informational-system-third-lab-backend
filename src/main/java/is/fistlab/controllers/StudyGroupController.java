@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/api/v1/auth/study-group")
+@RequestMapping("/api/v1/manage/study-groups")
 @CrossOrigin
 @RestController
 @AllArgsConstructor
@@ -21,8 +21,7 @@ public class StudyGroupController {
 
     @PostMapping("/create-new-group")
     public StudyGroup createStudyGroup(@RequestBody StudyGroupDto dto) {
-        StudyGroup studyGroup = StudyGroupMapper.toEntity(dto);
-        return studyGroupService.createStudyGroup(studyGroup);
+        return studyGroupService.createStudyGroup(dto);
     }
 
     @GetMapping("/get-all-groups")
