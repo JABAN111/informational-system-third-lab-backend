@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/user")
-@CrossOrigin
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 public class AuthorizationController {
     private final AuthServiceImpl authenticationService;
