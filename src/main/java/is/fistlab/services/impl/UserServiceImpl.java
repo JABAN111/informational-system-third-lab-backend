@@ -3,7 +3,6 @@ package is.fistlab.services.impl;
 import is.fistlab.database.entities.User;
 import is.fistlab.database.repositories.UserRepository;
 import is.fistlab.services.UserService;
-import is.fistlab.utils.PasswordProcessing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User createNewUser(User user) {
-        user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
+        user.setPassword(user.getPassword());
 
         User newUser = userRepository.save(user);
         log.info("{} registered successfully",user.getUsername());
@@ -41,7 +40,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         userRepository.getReferenceById(user.getId());
-        user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
+        //todo что блять здесь происходило
+//        user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
+//        user.setPassword(user.getPassword());
         User newUser = userRepository.save(user);
         log.info("{} updated successfully",user.getUsername());
         return newUser;
@@ -96,8 +97,5 @@ public class UserServiceImpl implements UserService {
         }
         return userRepository.findByUsername(user.getUsername());
     }
-    @Override
-    public String passwordToHash(String password) {
-        return PasswordProcessing.encryptPassword(password,SALT.getBytes());
-    }
+
 }
