@@ -96,10 +96,14 @@ public class PersonServiceImpl implements PersonService {
             log.error("Person with id: {} does not exist, update is impossible", person.getId());
             throw new PersonNotExistException("Пользователь не найден");
         }
-
-        var updatedPerson = personRepository.save(person);
-        log.info("Updated person: {}", updatedPerson);
-        return person;
+        Person personToUpdate = personRepository.getReferenceById(person.getId());
+        if(hasAccess(personToUpdate)){
+            person.setCreator(personToUpdate.getCreator());
+            var updatedPerson = personRepository.save(person);
+            log.info("Updated person: {}", updatedPerson);
+            return person;
+        }
+        throw new RuntimeException("Ошибка при обработке пользователя");
     }
 
     @Override
@@ -116,8 +120,7 @@ public class PersonServiceImpl implements PersonService {
      * @throws NotEnoughRights в случае, если пользователь не имеет достаточное количество прав и не является админом
      */
     private boolean hasAccess(Person person) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        var user = (User) context.getAuthentication().getPrincipal();
+        var user = getCurrentUserFromContext();
 
         if(person.getCreator().equals(user)){
             return true;
@@ -128,6 +131,14 @@ public class PersonServiceImpl implements PersonService {
         }
 
         throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
+    }
+
+    private User getCurrentUserFromContext(){
+        var user =  (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(Objects.nonNull(user)){
+            return user;
+        }
+        throw new RuntimeException("Контекст не нашел текущего пользователя");
     }
 
 }

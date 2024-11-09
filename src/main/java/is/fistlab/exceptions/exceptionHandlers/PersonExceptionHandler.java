@@ -1,5 +1,7 @@
 package is.fistlab.exceptions.exceptionHandlers;
 
+import is.fistlab.controllers.Response;
+import is.fistlab.exceptions.auth.NotEnoughRights;
 import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
@@ -13,22 +15,25 @@ public class PersonExceptionHandler {
 
     @ExceptionHandler(PersonNotUnique.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String personNotUnique(PersonNotUnique exc){
-        return exc.getMessage();
+    public Response<String> personNotUnique(PersonNotUnique exc){
+        return new Response<>(exc.getMessage());
     }
 
     @ExceptionHandler(PersonNotExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String personNotExist(PersonNotExistException exc){
-        return exc.getMessage();
+    public Response<String> personNotExist(PersonNotExistException exc){
+        return new Response<>(exc.getMessage());
     }
 
     @ExceptionHandler(InvalidActionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String personNotExist(InvalidActionException exc){
-        return exc.getMessage();
+    public Response<String> personNotExist(InvalidActionException exc){
+        return new Response<>(exc.getMessage());
     }
 
-
-
+    @ExceptionHandler(NotEnoughRights.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Response<String> notEnoughRights(NotEnoughRights exc){
+        return new Response<>(exc.getMessage());
+    }
 }

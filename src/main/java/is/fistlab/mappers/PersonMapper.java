@@ -85,8 +85,8 @@ public class PersonMapper {
 
         person.setPassportID(dto.getPassportID());
 
-        if(Objects.nonNull(dto.getUserDto())){
-            person.setCreator(UserMapper.toEntity(dto.getUserDto()));
+        if(Objects.nonNull(dto.getCreatorDto())){
+            person.setCreator(UserMapper.toEntity(dto.getCreatorDto()));
         }
 
         return person;

@@ -2,6 +2,8 @@ package is.fistlab.database.entities;
 
 import is.fistlab.database.enums.Color;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +15,8 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @Validated
+@Builder
+@AllArgsConstructor
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
