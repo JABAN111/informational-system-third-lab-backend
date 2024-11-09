@@ -6,6 +6,7 @@ import is.fistlab.dto.UserDto;
 import is.fistlab.security.sevices.Impl.AuthServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,13 +21,6 @@ public class AuthorizationController {
     public String hello() {
         log.info("hello");
         return "hi";
-    }
-
-    //метод временно мертв, нужна доделать админку
-    @PostMapping("/request-admin")
-    public String requestAdmin(@RequestBody User user) {
-        log.error("method not implemented");
-        return "error";
     }
 
     @PostMapping("/create-user")
