@@ -22,31 +22,37 @@ public class PersonController {
 
     @GetMapping("/persons-names")
     @CrossOrigin
-    public ResponseEntity<List<Person>> getAllPersonsName() {
+    public ResponseEntity<Response<List<Person>>> getAllPersonsName() {
         List<Person> personList = personService.getAllPersons();
-        return ResponseEntity.ok(personList);
+        return ResponseEntity.ok(
+                new Response<>(personList)
+        );
     }
 
 
     @PostMapping("/create-person")
-    public ResponseEntity<Person> createPerson(@RequestBody PersonDto dto) {
+    public ResponseEntity<Response<Person>> createPerson(@RequestBody PersonDto dto) {
         Person person = PersonMapper.toEntity(dto);
         personService.createPerson(person);
-        return ResponseEntity.status(HttpStatus.CREATED).body(person);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new Response<>("Пользователь успешно создан",person)
+        );
+//        return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
     @PostMapping("/update-person")
-    public ResponseEntity<Person> updatePerson(@RequestBody PersonDto dto) {
+    public ResponseEntity<Response<Person>> updatePerson(@RequestBody PersonDto dto) {
         Person person = PersonMapper.toEntity(dto);
         var updatedPerson = personService.updatePerson(person);
-        return ResponseEntity.ok(updatedPerson);
+        return ResponseEntity.ok(new Response<>("Данные о человеке: " + dto.getName() + " успешно обновлены"
+                ,updatedPerson));
     }
 
     @DeleteMapping("delete-person-by-id/{id}")
-    public ResponseEntity<String> deletePersonById(@PathVariable Long id) {
+    public ResponseEntity<Response<String>> deletePersonById(@PathVariable Long id) {
         log.info("Deleting person by id: {}", id);
         personService.deletePersonById(id);
 
-        return ResponseEntity.ok("Successfully deleted");
+        return ResponseEntity.ok(new Response<>("Пользователь с id: " + id + " успешно удален"));
     }
 }

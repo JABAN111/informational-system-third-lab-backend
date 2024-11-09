@@ -2,6 +2,8 @@ package is.fistlab.database.entities;
 
 import is.fistlab.database.enums.Color;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +15,8 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @Validated
+@Builder
+@AllArgsConstructor
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +42,8 @@ public class Person {
     @Size(min = 10)
     //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример ису ид)
     private String passportID; //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    private User creator;
 }
