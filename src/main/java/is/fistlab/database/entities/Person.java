@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @Validated
 @Builder
 @AllArgsConstructor
-public class Person {
+public class Person implements CreatorAware {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
