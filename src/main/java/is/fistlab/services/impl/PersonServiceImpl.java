@@ -1,13 +1,17 @@
 package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.Person;
+import is.fistlab.database.entities.User;
 import is.fistlab.database.repositories.PersonRepository;
+import is.fistlab.database.repositories.UserRepository;
 import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
 import is.fistlab.services.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +22,13 @@ import java.util.Optional;
 @Service
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
+//    private final SecurityContext securityContext
+    private final UserRepository userRepository;
 
     @Autowired
-    public PersonServiceImpl(PersonRepository personRepository) {
+    public PersonServiceImpl(PersonRepository personRepository, UserRepository userRepository) {
         this.personRepository = personRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -48,7 +55,8 @@ public class PersonServiceImpl implements PersonService {
             log.error("Person with passportID: {} already exist", person.getPassportID());
             throw new PersonNotUnique("Паспорт пользователя должен быть уникальным");
         }
-
+        var creator = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        person.setCreator(creator);
         personRepository.save(person);
         log.info("Created person: {}", person);
         return person;
@@ -57,19 +65,26 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     @Override
     public void deletePersonById(Long id) {
-        if(!personRepository.existsById(id)){
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        var deletingPerson = personRepository.findById(id);
+        if(deletingPerson.isEmpty()){
             log.error("Person with id: {} does not exist", id);
             throw new PersonNotExistException("Пользователя с таким id не существует");
         }
-
-        long cntOfAdministrating = personRepository.countStudyGroupsByPersonId(id);
-        if(cntOfAdministrating > 0){
-            log.error("Person are connected with {}", cntOfAdministrating);
-            throw new InvalidActionException("Невозможно удалить этого человека, " +
-                    "так как он является админом админом " + cntOfAdministrating +" групп");
+        if(deletingPerson.get().getCreator().equals(user)){
+            personRepository.deleteById(id);
         }
 
-        personRepository.deleteById(id);
+        //todo заменить, тут нужно просто каскадное удаление групп
+//        long cntOfAdministrating = personRepository.countStudyGroupsByPersonId(id);
+//        if(cntOfAdministrating > 0){
+//            log.error("Person are connected with {}", cntOfAdministrating);
+//            throw new InvalidActionException("Невозможно удалить этого человека, " +
+//                    "так как он является админом админом " + cntOfAdministrating +" групп");
+//        }
+
+//        personRepository.deleteById(id);
         log.info("Deleted person: {}", id);
     }
 
