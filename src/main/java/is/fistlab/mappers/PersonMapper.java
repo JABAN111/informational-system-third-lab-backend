@@ -81,7 +81,13 @@ public class PersonMapper {
             log.error("Passport ID must be at least 10 characters long");
             throw new InvalidFieldException("Идентификационный номер паспорта должен содержать не менее 10 символов");
         }
+
+
         person.setPassportID(dto.getPassportID());
+
+        if(Objects.nonNull(dto.getUserDto())){
+            person.setCreator(UserMapper.toEntity(dto.getUserDto()));
+        }
 
         return person;
     }

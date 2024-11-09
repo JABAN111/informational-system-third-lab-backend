@@ -38,4 +38,8 @@ public class Person {
     @Size(min = 10)
     //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример ису ид)
     private String passportID; //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn
+    private User creator;
 }
