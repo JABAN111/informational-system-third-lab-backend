@@ -1,5 +1,6 @@
 package is.fistlab.exceptions.exceptionHandlers;
 
+import is.fistlab.controllers.Response;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,7 +12,7 @@ public class StudyGroupExceptionHandler {
 
     @ExceptionHandler(StudyGroupAlreadyExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String StudyGroupAlreadyExistException(StudyGroupAlreadyExistException e) {
-        return e.getMessage();
+    public Response<String> StudyGroupAlreadyExistException(StudyGroupAlreadyExistException e) {
+        return new Response<> (e.getMessage());
     }
 }

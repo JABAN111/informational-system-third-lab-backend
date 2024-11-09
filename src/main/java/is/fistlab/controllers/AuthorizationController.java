@@ -30,12 +30,12 @@ public class AuthorizationController {
     }
 
     @PostMapping("/create-user")
-    public JwtAuthenticationResponse registration(@RequestBody UserDto dto){
-        return authenticationService.signUp(dto);
+    public Response<JwtAuthenticationResponse> registration(@RequestBody UserDto dto){
+        return new Response<>(authenticationService.signUp(dto));
     }
 
     @PostMapping("/login")
-    public JwtAuthenticationResponse login(@RequestBody UserDto dto){
-        return authenticationService.signIn(dto);
+    public Response<JwtAuthenticationResponse> login(@RequestBody UserDto dto){
+        return new Response<>(authenticationService.signIn(dto));
     }
 }
