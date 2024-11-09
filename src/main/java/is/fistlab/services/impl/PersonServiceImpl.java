@@ -2,20 +2,24 @@ package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.User;
+import is.fistlab.database.enums.UserRole;
 import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.database.repositories.UserRepository;
+import is.fistlab.exceptions.auth.NotEnoughRights;
 import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
 import is.fistlab.services.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -67,15 +71,16 @@ public class PersonServiceImpl implements PersonService {
     public void deletePersonById(Long id) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        var deletingPerson = personRepository.findById(id);
+        Optional<Person> deletingPerson = personRepository.findById(id);
         if(deletingPerson.isEmpty()){
             log.error("Person with id: {} does not exist", id);
             throw new PersonNotExistException("Пользователя с таким id не существует");
         }
-        if(deletingPerson.get().getCreator().equals(user)){
-            personRepository.deleteById(id);
-        }
 
+        if(hasAccess(deletingPerson.get())){
+            personRepository.deleteById(id);
+            log.info("Deleted person: {}", id);
+        }
         //todo заменить, тут нужно просто каскадное удаление групп
 //        long cntOfAdministrating = personRepository.countStudyGroupsByPersonId(id);
 //        if(cntOfAdministrating > 0){
@@ -83,9 +88,6 @@ public class PersonServiceImpl implements PersonService {
 //            throw new InvalidActionException("Невозможно удалить этого человека, " +
 //                    "так как он является админом админом " + cntOfAdministrating +" групп");
 //        }
-
-//        personRepository.deleteById(id);
-        log.info("Deleted person: {}", id);
     }
 
     @Override
@@ -104,4 +106,28 @@ public class PersonServiceImpl implements PersonService {
     public List<Person> getAllPersons() {
         return personRepository.findAll();
     }
+
+    /**
+     * Проверяет, является ли текущий пользователь создателем объекта
+     *
+     * @param person объект, для которого проверяется возможность изменяться
+     *
+     * @return возвращает <code>true</code>, если имеет доступ, в противном случае выкидывает ошибку
+     * @throws NotEnoughRights в случае, если пользователь не имеет достаточное количество прав и не является админом
+     */
+    private boolean hasAccess(Person person) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        var user = (User) context.getAuthentication().getPrincipal();
+
+        if(person.getCreator().equals(user)){
+            return true;
+        }
+
+        if(Objects.isNull(user.getRole()) || user.getRole() != UserRole.ROLE_ADMIN){
+            throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
+        }
+
+        throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
+    }
+
 }

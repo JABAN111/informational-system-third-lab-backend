@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: FirstLab
+
+  datasource:
+    url: jdbc:postgresql://localhost:23210/habrdb
+    username: user
+    password: user
+
+  jpa:
+    show-sql: true
+    properties:
+      javax:
+        persistence:
+          provider: org.eclipse.persistence.jpa.PersistenceProvider
+      eclipse:
+        link:
+          logging:
+            level: FINE
+            file: stdout
+    hibernate:
+      ddl-auto: update
+
+server:
+  error:
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
+
+  web:
+    resources:
+      add-mappings: false
+
+token:
+  signing:
+    key: Q5v1CXQ1Y64cayU84BnlR3Az9fVFe8Bvn6Mrf68bX5U=
+  salt:
+    D&D
