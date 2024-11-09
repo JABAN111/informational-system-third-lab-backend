@@ -39,7 +39,7 @@ public class Person {
     //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример ису ид)
     private String passportID; //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn
     private User creator;
 }
