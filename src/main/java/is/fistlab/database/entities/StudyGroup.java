@@ -10,14 +10,13 @@ import lombok.ToString;
 
 //todo проверить, как нормально включить его использование
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
 @Entity
 @NoArgsConstructor
 @ToString
-public class StudyGroup {
+public class StudyGroup implements CreatorAware {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,6 +57,10 @@ public class StudyGroup {
 
     @ManyToOne(optional = false)
     private Person groupAdmin; //Поле не может быть null
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    private User creator;
 
     @PrePersist
     @PreUpdate

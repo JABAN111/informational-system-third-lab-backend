@@ -19,23 +19,26 @@ public class StudyGroupController {
     private final StudyGroupService studyGroupService;
 
     @PostMapping("/create-new-group")
-    public StudyGroup createStudyGroup(@RequestBody StudyGroupDto dto) {
-        return studyGroupService.createStudyGroup(dto);
+    public ResponseEntity<Response<StudyGroup>> createStudyGroup(@RequestBody StudyGroupDto dto) {
+        return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана",studyGroupService.createStudyGroup(dto)));
     }
 
     @GetMapping("/get-all-groups")
-    public List<StudyGroup> getAllStudyGroups() {
-        return studyGroupService.getAllStudyGroups();
+    public ResponseEntity<Response<List<StudyGroup>>> getAllStudyGroups() {
+        return ResponseEntity.ok(new Response<>(studyGroupService.getAllStudyGroups()));
     }
 
     @DeleteMapping("/delete-group-by-id/{id}")
-    public ResponseEntity<String> deleteStudyGroupById(@PathVariable Long id) {
+    public ResponseEntity<Response<String>> deleteStudyGroupById(@PathVariable Long id) {
         studyGroupService.deleteStudyGroup(id);
-        return ResponseEntity.ok("Deleted group with id " + id);
+        return ResponseEntity.ok(new Response<>("Группа с id: " + id + " успешна удалена"));
     }
 
     @PatchMapping("/update-group-by-id/{id}")
-    public ResponseEntity<StudyGroup> updateStudyGroupById(@PathVariable Long id,@RequestBody StudyGroupDto dto) {
-        return ResponseEntity.ok(studyGroupService.updateStudyGroup(id, dto));
+    public ResponseEntity<Response<StudyGroup>> updateStudyGroupById(@PathVariable Long id,@RequestBody StudyGroupDto dto) {
+        return ResponseEntity.ok(
+                new Response<>(
+                        "Группа с названием " + dto.getName() + " успешно обновлена",
+                        studyGroupService.updateStudyGroup(id, dto)));
     }
 }
