@@ -1,27 +1,19 @@
 package is.fistlab.services.impl;
 
+
 import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.User;
-import is.fistlab.database.enums.UserRole;
 import is.fistlab.database.repositories.PersonRepository;
-import is.fistlab.database.repositories.UserRepository;
-import is.fistlab.exceptions.auth.NotEnoughRights;
-import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
 import is.fistlab.services.PersonService;
 import is.fistlab.utils.AuthenticationUtils;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j

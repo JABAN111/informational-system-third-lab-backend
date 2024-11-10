@@ -1,10 +1,14 @@
 package is.fistlab.database.repositories;
 
 import is.fistlab.database.entities.User;
+import is.fistlab.database.enums.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User,Long> {
+import java.util.List;
+
+public interface UserRepository extends JpaRepository<User, java.lang.Long> {
 
     User findByUsername(String username);
 
+    List<User> findAllByRole(UserRole userRole);
 }

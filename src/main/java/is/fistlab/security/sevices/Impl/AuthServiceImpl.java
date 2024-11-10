@@ -31,23 +31,26 @@ public class AuthServiceImpl implements AuthService {
                 .role(UserRole.ROLE_USER)
                 .build();
 
-        userService.createNewUser(user);
+        var savedUser = userService.createNewUser(user);
 
-        setAdminOrAddToWaitList(requestDto, user);
+        if (UserRole.valueOf(requestDto.getRole()) == UserRole.ROLE_ADMIN) {
+            savedUser = setAdminOrAddToWaitList(savedUser);
+        }
 
-        var jwt = jwtService.generateToken(user);
+        var jwt = jwtService.generateToken(savedUser);
         return new JwtAuthenticationResponse(jwt);
     }
 
-    private void setAdminOrAddToWaitList(UserDto requestedUser, User userSavedInRepository) {
-        if(UserRole.valueOf(requestedUser.getRole()) == UserRole.ROLE_ADMIN){
-            if(adminProcessingService.isAnyAdminExist()){
-                userSavedInRepository.setRole(UserRole.ROLE_ADMIN);
-                userService.updateUser(userSavedInRepository);
-            }else{
-                adminProcessingService.addUserToWaitingList(userSavedInRepository);
-            }
+    private User setAdminOrAddToWaitList(User userSavedInRepository) {
+        var toReturn = userSavedInRepository;
+        if (!adminProcessingService.isAnyAdminExist()) {
+            System.out.println(adminProcessingService.getAllPotentialAdmins().size());
+            userSavedInRepository.setRole(UserRole.ROLE_ADMIN);
+            toReturn = userService.updateUser(userSavedInRepository);
+        } else {
+            adminProcessingService.addUserToWaitingList(userSavedInRepository);
         }
+        return toReturn;
     }
 
 

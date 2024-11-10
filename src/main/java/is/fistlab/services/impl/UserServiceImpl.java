@@ -50,13 +50,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(java.lang.Long id) {
         userRepository.deleteById(id);
         log.info("User with id: {} deleted successfully",id);
     }
 
     @Override
-    public User getUser(Long id) {
+    public User getUser(java.lang.Long id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()) {
             log.info("User with id: {} found", id);

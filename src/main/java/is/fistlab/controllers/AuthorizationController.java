@@ -1,6 +1,5 @@
 package is.fistlab.controllers;
 
-import is.fistlab.database.entities.User;
 import is.fistlab.dto.JwtAuthenticationResponse;
 import is.fistlab.dto.UserDto;
 import is.fistlab.security.sevices.Impl.AuthServiceImpl;
@@ -24,12 +23,12 @@ public class AuthorizationController {
     }
 
     @PostMapping("/create-user")
-    public Response<JwtAuthenticationResponse> registration(@RequestBody UserDto dto){
-        return new Response<>(authenticationService.signUp(dto));
+    public ResponseEntity<Response<JwtAuthenticationResponse>> registration(@RequestBody UserDto dto){
+        return ResponseEntity.ok(new Response<>(authenticationService.signUp(dto)));
     }
 
     @PostMapping("/login")
-    public Response<JwtAuthenticationResponse> login(@RequestBody UserDto dto){
-        return new Response<>(authenticationService.signIn(dto));
+    public ResponseEntity<Response<JwtAuthenticationResponse>> login(@RequestBody UserDto dto){
+        return ResponseEntity.ok(new Response<>(authenticationService.signIn(dto)));
     }
 }

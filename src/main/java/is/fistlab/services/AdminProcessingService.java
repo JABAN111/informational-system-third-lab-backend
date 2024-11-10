@@ -12,12 +12,14 @@ public interface AdminProcessingService {
      * Если админа нет, то присваивает первому пользователю роль админа
      */
     boolean isAnyAdminExist();
+    boolean isPotentialAdminExist(Long id);
 
     List<PotentialAdmin> getAllPotentialAdmins();
 
     void addUserToWaitingList(User user);
 
     void removeUserFromWaitingList(User user);
+    void rejectUserForAdminRole(User user);
 
-    void giveAdminRoleToUser(User user);
+    User giveAdminRoleToUser(Long id, User user);
 }

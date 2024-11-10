@@ -7,8 +7,8 @@ public interface UserService {
     User createNewUser(User user);
     User getUserByUsername(String username);
     User updateUser(User user);
-    void deleteUser(Long id);
-    User getUser(Long id);
+    void deleteUser(java.lang.Long id);
+    User getUser(java.lang.Long id);
     User getUser(User user);
     boolean isUserExists(String username);
     UserDetailsService getUserDetailsService();

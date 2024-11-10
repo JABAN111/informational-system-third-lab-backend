@@ -32,7 +32,8 @@ public class AuthenticationUtils {
             throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
         }
 
-        throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
+        return true;
+
     }
 
     public User getCurrentUserFromContext(){
