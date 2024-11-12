@@ -6,6 +6,9 @@ import is.fistlab.mappers.PersonMapper;
 import is.fistlab.services.PersonService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +23,23 @@ import java.util.List;
 public class PersonController {
     private PersonService personService;
 
+//    @GetMapping("/persons-names")
+//    @CrossOrigin
+//    @Deprecated
+//    public ResponseEntity<Response<List<Person>>> getAllPersonsName() {
+//        List<Person> personList = personService.getAllPersons();
+//        return ResponseEntity.ok(
+//                new Response<>(personList)
+//        );
+//    }
+
     @GetMapping("/persons-names")
-    @CrossOrigin
-    public ResponseEntity<Response<List<Person>>> getAllPersonsName() {
-        List<Person> personList = personService.getAllPersons();
-        return ResponseEntity.ok(
-                new Response<>(personList)
-        );
+    public ResponseEntity<Response<Page<Person>>> getAllPersonsName(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Person> personPage = personService.getAllPersons(pageable);
+        return ResponseEntity.ok(new Response<>(personPage));
     }
 
 

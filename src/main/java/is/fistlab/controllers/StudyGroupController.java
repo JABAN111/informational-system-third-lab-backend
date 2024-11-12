@@ -1,11 +1,15 @@
 package is.fistlab.controllers;
 
+import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.mappers.StudyGroupMapper;
 import is.fistlab.services.StudyGroupService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +28,12 @@ public class StudyGroupController {
     }
 
     @GetMapping("/get-all-groups")
-    public ResponseEntity<Response<List<StudyGroup>>> getAllStudyGroups() {
-        return ResponseEntity.ok(new Response<>(studyGroupService.getAllStudyGroups()));
+    public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
+        return ResponseEntity.ok(new Response<>(studyGroupPage));
     }
 
     @DeleteMapping("/delete-group-by-id/{id}")

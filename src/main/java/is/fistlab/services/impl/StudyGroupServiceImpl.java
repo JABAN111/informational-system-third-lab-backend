@@ -1,8 +1,12 @@
 package is.fistlab.services.impl;
 
+import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.StudyGroup;
+import is.fistlab.database.entities.User;
+import is.fistlab.database.enums.UserRole;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.dto.StudyGroupDto;
+import is.fistlab.exceptions.auth.NotEnoughRights;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
 import is.fistlab.mappers.StudyGroupMapper;
@@ -10,10 +14,14 @@ import is.fistlab.services.StudyGroupService;
 import is.fistlab.utils.AuthenticationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -43,9 +51,14 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     }
 
     @Override
-    public List<StudyGroup> getAllStudyGroups() {
-        return studyGroupRepository.findAll();
+    public Page<StudyGroup> getAllStudyGroups(Pageable pageable) {
+        return studyGroupRepository.findAll(pageable);
     }
+
+//    @Override
+//    public List<StudyGroup> getAllStudyGroups() {
+//        return studyGroupRepository.findAll();
+//    }
 
     @Override
     public StudyGroup getStudyGroup(Long id) {

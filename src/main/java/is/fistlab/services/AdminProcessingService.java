@@ -2,6 +2,8 @@ package is.fistlab.services;
 
 import is.fistlab.database.entities.PotentialAdmin;
 import is.fistlab.database.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ public interface AdminProcessingService {
 
     void removeUserFromWaitingList(User user);
     void rejectUserForAdminRole(User user);
+
+    Page<PotentialAdmin> getPotentialAdmins(Pageable pageable);
 
     User giveAdminRoleToUser(Long id, User user);
 }

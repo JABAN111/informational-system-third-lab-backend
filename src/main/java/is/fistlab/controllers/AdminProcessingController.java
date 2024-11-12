@@ -1,11 +1,15 @@
 package is.fistlab.controllers;
 
+import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.PotentialAdmin;
 import is.fistlab.database.entities.User;
 import is.fistlab.database.repositories.PotentialAdminRepository;
 import is.fistlab.services.AdminProcessingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +24,21 @@ import java.util.List;
 public class AdminProcessingController {
     private final AdminProcessingService adminProcessingService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @GetMapping("/get-all")
+//    public ResponseEntity<Response<List<PotentialAdmin>>> getAllPotentialAdmin() {
+//        return ResponseEntity.ok(new Response<>(adminProcessingService.getAllPotentialAdmins()));
+//    }
+
+
     @GetMapping("/get-all")
-    public ResponseEntity<Response<List<PotentialAdmin>>> getAllPotentialAdmin() {
-        return ResponseEntity.ok(new Response<>(adminProcessingService.getAllPotentialAdmins()));
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Response<Page<PotentialAdmin>>> getAllPotentialAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PotentialAdmin> personPage = adminProcessingService.getPotentialAdmins(pageable);
+        return ResponseEntity.ok(new Response<>(personPage));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

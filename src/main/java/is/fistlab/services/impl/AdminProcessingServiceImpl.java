@@ -9,6 +9,8 @@ import is.fistlab.services.AdminProcessingService;
 import is.fistlab.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +29,13 @@ public class AdminProcessingServiceImpl implements AdminProcessingService {
         return !userRepository.findAllByRole(UserRole.ROLE_ADMIN).isEmpty();
     }
 
-    @Override
     public List<PotentialAdmin> getAllPotentialAdmins() {
         return adminRepository.findAll();
+    }
+
+    @Override
+    public Page<PotentialAdmin> getPotentialAdmins(Pageable pageable) {
+        return adminRepository.findAll(pageable);
     }
 
     @Override
