@@ -1,10 +1,14 @@
 package is.fistlab.services;
 
+import is.fistlab.database.entities.Coordinates;
 import is.fistlab.database.entities.StudyGroup;
+import is.fistlab.database.enums.FormOfEducation;
+import is.fistlab.database.enums.Semester;
 import is.fistlab.dto.StudyGroupDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -21,4 +25,12 @@ public interface StudyGroupService {
     List<Float> getUniqueStudyGroupByAverageMark();
 
     Integer getCountOfExpelledStudents();
+    List<StudyGroup> filterStudyGroups(String name, Long studentsCount,
+                                       FormOfEducation formOfEducation,
+                                       Semester semester, LocalDate createdAfter,
+                                       Long shouldBeExpelled, Float averageMark,
+                                       Long expelledStudents, Integer transferredStudents,
+                                       Coordinates coordinates);
+
+    Page<StudyGroup> getPagedResult(List<StudyGroup> studyGroups, Pageable pageable);
 }

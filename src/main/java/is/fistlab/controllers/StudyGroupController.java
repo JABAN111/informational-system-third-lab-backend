@@ -1,6 +1,9 @@
 package is.fistlab.controllers;
 
+import is.fistlab.database.entities.Coordinates;
 import is.fistlab.database.entities.StudyGroup;
+import is.fistlab.database.enums.FormOfEducation;
+import is.fistlab.database.enums.Semester;
 import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.services.StudyGroupService;
 import lombok.AllArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +88,35 @@ public class StudyGroupController {
         return ResponseEntity.ok(
                 new Response<>("Обновлен админ группы с ид: " + groupId)
         );
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Response<Page<StudyGroup>>> getFilteredStudyGroups(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Long studentsCount,
+            @RequestParam(required = false) FormOfEducation formOfEducation,
+            @RequestParam(required = false) Semester semester,
+            @RequestParam(required = false) LocalDate createdAfter,
+            @RequestParam(required = false) Long shouldBeExpelled,
+            @RequestParam(required = false) Float averageMark,
+            @RequestParam(required = false) Long expelledStudents,
+            @RequestParam(required = false) Integer transferredStudents,
+            @RequestParam(required = false) Coordinates coordinates,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Вызов метода сервиса с фильтрацией
+        List<StudyGroup> studyGroups = studyGroupService.filterStudyGroups(
+                name, studentsCount, formOfEducation, semester, createdAfter,
+                shouldBeExpelled, averageMark, expelledStudents, transferredStudents, coordinates
+        );
+
+        // Пагинация результатов
+        Page<StudyGroup> studyGroupPage = studyGroupService.getPagedResult(studyGroups, pageable);
+
+        return ResponseEntity.ok(new Response<>(studyGroupPage));
     }
 
 }

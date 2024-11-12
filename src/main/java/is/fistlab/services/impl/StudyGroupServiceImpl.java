@@ -1,7 +1,11 @@
 package is.fistlab.services.impl;
 
+import is.fistlab.database.entities.Coordinates;
 import is.fistlab.database.entities.StudyGroup;
+import is.fistlab.database.enums.FormOfEducation;
+import is.fistlab.database.enums.Semester;
 import is.fistlab.database.repositories.StudyGroupRepository;
+import is.fistlab.database.repositories.specifications.StudyGroupSpecifications;
 import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
@@ -11,12 +15,16 @@ import is.fistlab.utils.AuthenticationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -125,6 +133,59 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Override
     public Integer getCountOfExpelledStudents() {
         return studyGroupRepository.getCountOfExpelledStudents();
+    }
+
+    @Override
+    public List<StudyGroup> filterStudyGroups(String name, Long studentsCount,
+                                              FormOfEducation formOfEducation,
+                                              Semester semester, LocalDate createdAfter,
+                                              Long shouldBeExpelled, Float averageMark,
+                                              Long expelledStudents, Integer transferredStudents,
+                                              Coordinates coordinates) {
+        // Начинаем с пустой спецификации
+        Specification<StudyGroup> specification = Specification.where(null);
+
+        // Применяем фильтры только если параметры не равны null
+        if (Objects.nonNull(name)) {
+            specification = specification.and(StudyGroupSpecifications.hasName(name));
+        }
+        if (studentsCount != null) {
+            specification = specification.and(StudyGroupSpecifications.hasStudentsCountGreaterThan(studentsCount));
+        }
+        if (formOfEducation != null) {
+            specification = specification.and(StudyGroupSpecifications.hasFormOfEducation(formOfEducation));
+        }
+        if (semester != null) {
+            specification = specification.and(StudyGroupSpecifications.hasSemester(semester));
+        }
+        if (createdAfter != null) {
+            specification = specification.and(StudyGroupSpecifications.createdAfter(createdAfter));
+        }
+        if (shouldBeExpelled != null) {
+            specification = specification.and(StudyGroupSpecifications.hasShouldBeExpelledGreaterThan(shouldBeExpelled));
+        }
+        if (averageMark != null) {
+            specification = specification.and(StudyGroupSpecifications.hasAverageMarkGreaterThan(averageMark));
+        }
+        if (expelledStudents != null) {
+            specification = specification.and(StudyGroupSpecifications.hasExpelledStudentsGreaterThan(expelledStudents));
+        }
+        if (transferredStudents != null) {
+            specification = specification.and(StudyGroupSpecifications.hasTransferredStudentsGreaterThan(transferredStudents));
+        }
+        if (coordinates != null) {
+            specification = specification.and(StudyGroupSpecifications.hasCoordinates(coordinates));
+        }
+
+        // Выполняем запрос с применением фильтров
+        return studyGroupRepository.findAll(specification);
+    }
+
+    @Override
+    public Page<StudyGroup> getPagedResult(List<StudyGroup> studyGroups, Pageable pageable) {
+        int start = Math.min((int) pageable.getOffset(), studyGroups.size());
+        int end = Math.min((start + pageable.getPageSize()), studyGroups.size());
+        return new PageImpl<>(studyGroups.subList(start, end), pageable, studyGroups.size());
     }
 
 }
