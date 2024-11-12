@@ -11,12 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RequestMapping("/api/v1/manage/study-groups")
@@ -30,14 +32,25 @@ public class StudyGroupController {
         return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана",studyGroupService.createStudyGroup(dto)));
     }
 
-    @GetMapping("/get-all-groups")
-    public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
-        return ResponseEntity.ok(new Response<>(studyGroupPage));
+@GetMapping("/get-all-groups")
+public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) String sortBy,
+        @RequestParam(required = false) String sortDirection
+) {
+    Sort sort = Sort.by(Objects.nonNull(sortBy) ? sortBy : "id");
+    if ("desc".equalsIgnoreCase(sortDirection)) {
+        sort = sort.descending();
+    } else {
+        sort = sort.ascending();
     }
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
+
+    return ResponseEntity.ok(new Response<>(studyGroupPage));
+}
 
     @DeleteMapping("/delete-group-by-id/{id}")
     public ResponseEntity<Response<String>> deleteStudyGroupById(@PathVariable Long id) {
