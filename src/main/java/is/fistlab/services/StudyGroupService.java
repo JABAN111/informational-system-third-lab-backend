@@ -33,4 +33,6 @@ public interface StudyGroupService {
                                        Coordinates coordinates);
 
     Page<StudyGroup> getPagedResult(List<StudyGroup> studyGroups, Pageable pageable);
+
+    Pageable getPageAfterSort(int page, int size, String sortBy, String sortDirection);
 }

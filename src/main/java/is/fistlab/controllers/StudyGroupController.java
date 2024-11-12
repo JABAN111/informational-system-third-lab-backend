@@ -11,14 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @RequestMapping("/api/v1/manage/study-groups")
@@ -39,14 +37,8 @@ public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
         @RequestParam(required = false) String sortBy,
         @RequestParam(required = false) String sortDirection
 ) {
-    Sort sort = Sort.by(Objects.nonNull(sortBy) ? sortBy : "id");
-    if ("desc".equalsIgnoreCase(sortDirection)) {
-        sort = sort.descending();
-    } else {
-        sort = sort.ascending();
-    }
 
-    Pageable pageable = PageRequest.of(page, size, sort);
+    var pageable = studyGroupService.getPageAfterSort(page, size, sortBy, sortDirection);
     Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
 
     return ResponseEntity.ok(new Response<>(studyGroupPage));

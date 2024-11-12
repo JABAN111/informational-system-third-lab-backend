@@ -14,10 +14,9 @@ import is.fistlab.services.StudyGroupService;
 import is.fistlab.utils.AuthenticationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,13 +42,13 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Override
     public StudyGroup createStudyGroup(StudyGroupDto dto) {
         StudyGroup studyGroupToSave = StudyGroupMapper.toEntity(dto);
-        if(studyGroupToSave.getId() != null && studyGroupRepository.existsById(studyGroupToSave.getId())) {
+        if (studyGroupToSave.getId() != null && studyGroupRepository.existsById(studyGroupToSave.getId())) {
             log.error("Study group with id {} already exists", studyGroupToSave.getId());
             throw new StudyGroupAlreadyExistException("Study group with id " + studyGroupToSave.getId() + " already exists");
         }
         studyGroupToSave.setCreator(authenticationUtils.getCurrentUserFromContext());
         var savedStudyGroup = studyGroupRepository.save(studyGroupToSave);
-        log.info("Study group created: {}",studyGroupToSave);
+        log.info("Study group created: {}", studyGroupToSave);
         return savedStudyGroup;
     }
 
@@ -69,12 +68,13 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         studyGroup.ifPresent(data -> log.info("Got study group by id: {}", data));
         return studyGroup.orElse(null);
     }
+
     @Transactional
     @Override
-    public StudyGroup updateStudyGroup(Long id,StudyGroupDto dto) {
+    public StudyGroup updateStudyGroup(Long id, StudyGroupDto dto) {
         Optional<StudyGroup> optionalStudyGroup = studyGroupRepository.findById(id);
 
-        if(optionalStudyGroup.isEmpty()) {
+        if (optionalStudyGroup.isEmpty()) {
             log.error("Study group with id {} does not exist", id);
             throw new StudyGroupNotExistException("Study group with id " + id + " does not exist");
         }
@@ -82,7 +82,7 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         var newStudyGroup = StudyGroupMapper.toEntity(dto);
         newStudyGroup.setId(id);
         StudyGroup savedStudyGroup;
-        if(authenticationUtils.hasAccess(optionalStudyGroup.get())){
+        if (authenticationUtils.hasAccess(optionalStudyGroup.get())) {
             newStudyGroup.setCreator(authenticationUtils.getCurrentUserFromContext());
             savedStudyGroup = studyGroupRepository.save(newStudyGroup);
 
@@ -91,27 +91,28 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         }
         throw new RuntimeException("Не удалось обновить группу");
     }
+
     @Transactional
     @Override
     public void deleteStudyGroup(Long id) {
         Optional<StudyGroup> optionalStudyGroup = studyGroupRepository.findById(id);
-        if(optionalStudyGroup.isEmpty()) {
+        if (optionalStudyGroup.isEmpty()) {
             log.error("Study group with id {} does not exist", id);
             throw new StudyGroupNotExistException("Study group with id " + id + " does not exist");
         }
 
-        if(!studyGroupRepository.existsById(id)) {
+        if (!studyGroupRepository.existsById(id)) {
             log.error("Study group does not exist: {}", id);
             throw new StudyGroupNotExistException("Такой группы не существует");
         }
-        if(authenticationUtils.hasAccess(optionalStudyGroup.get())){
+        if (authenticationUtils.hasAccess(optionalStudyGroup.get())) {
             studyGroupRepository.deleteById(id);
             log.info("Deleted StudyGroup with id: {}", id);
         }
     }
 
     @Override
-    public List<Map<String,Object>> getCountFormsOfEducations() {
+    public List<Map<String, Object>> getCountFormsOfEducations() {
         return studyGroupRepository.getCountFormsOfEducations();
     }
 
@@ -186,6 +187,27 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         int start = Math.min((int) pageable.getOffset(), studyGroups.size());
         int end = Math.min((start + pageable.getPageSize()), studyGroups.size());
         return new PageImpl<>(studyGroups.subList(start, end), pageable, studyGroups.size());
+    }
+
+    @Override
+    public Pageable getPageAfterSort(final int page, final int size, final String sortBy, final String sortDirection) {
+        final List<String> allowedSortFields = List.of("id", "name", "studentsCount", "expelledStudents",
+                "transferredStudents", "shouldBeExpelled",
+                "averageMark", "creationDate");
+
+        Sort sort = Sort.by("id"); // По умолчанию сортировка по id
+        if (allowedSortFields.contains(sortBy)) {
+            sort = Sort.by(sortBy);
+            if ("desc".equalsIgnoreCase(sortDirection)) {
+                sort = sort.descending();
+            } else {
+                sort = sort.ascending();
+            }
+        } else {
+            log.warn("Invalid sortBy field: {}. Default sorting by id is used.", sortBy);
+        }
+
+        return PageRequest.of(page, size, sort);
     }
 
 }
