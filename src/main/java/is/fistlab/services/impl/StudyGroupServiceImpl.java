@@ -1,12 +1,8 @@
 package is.fistlab.services.impl;
 
-import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.StudyGroup;
-import is.fistlab.database.entities.User;
-import is.fistlab.database.enums.UserRole;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.dto.StudyGroupDto;
-import is.fistlab.exceptions.auth.NotEnoughRights;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
 import is.fistlab.mappers.StudyGroupMapper;
@@ -16,12 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -105,6 +100,31 @@ public class StudyGroupServiceImpl implements StudyGroupService {
             studyGroupRepository.deleteById(id);
             log.info("Deleted StudyGroup with id: {}", id);
         }
+    }
+
+    @Override
+    public List<Map<String,Object>> getCountFormsOfEducations() {
+        return studyGroupRepository.getCountFormsOfEducations();
+    }
+
+    @Override
+    public void updateAdminGroup(Long groupId, Long adminId) {
+        studyGroupRepository.updateGroupAdmin(groupId, adminId);
+    }
+
+    @Override
+    public void deleteByGroupAdminName(String groupAdminName) {
+        studyGroupRepository.deleteByAdminName(groupAdminName);
+    }
+
+    @Override
+    public List<Float> getUniqueStudyGroupByAverageMark() {
+        return studyGroupRepository.getUniqueGroupsByAverageMark();
+    }
+
+    @Override
+    public Integer getCountOfExpelledStudents() {
+        return studyGroupRepository.getCountOfExpelledStudents();
     }
 
 }
