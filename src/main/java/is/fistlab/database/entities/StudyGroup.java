@@ -38,7 +38,7 @@ public class StudyGroup implements CreatorAware {
     private long expelledStudents; //Значение поля должно быть больше 0
 
     @Min(1)
-    private int transferredStudents ; //Значение поля должно быть больше 0
+    private int transferredStudents; //Значение поля должно быть больше 0
 
     @Enumerated(EnumType.STRING)
     private FormOfEducation formOfEducation; //Поле может быть null

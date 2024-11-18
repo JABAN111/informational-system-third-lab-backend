@@ -7,12 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Map;
 
 public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long>, JpaSpecificationExecutor<StudyGroup> {
-    Page<StudyGroup> findAll(Pageable pageable);
+    @NonNull
+    Page<StudyGroup> findAll(@NonNull Pageable pageable);
 
     @Query(value = "SELECT update_group_admin(:groupId, :adminId)", nativeQuery = true)
     void updateGroupAdmin(@Param("groupId") Long groupId, @Param("adminId") Long adminId);
@@ -23,9 +25,13 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long>, J
     @Query(value = "SELECT delete_by_group_admin(:admin_name)", nativeQuery = true)
     void deleteByAdminName(@Param("admin_name") String admin_name);
 
-    @Query(value = "SELECT unnest(get_unique_average_marks())",nativeQuery = true)
+    @Query(value = "SELECT unnest(get_unique_average_marks())", nativeQuery = true)
     List<Float> getUniqueGroupsByAverageMark();
 
     @Query(value = "SELECT get_total_expelled_students()", nativeQuery = true)
     Integer getCountOfExpelledStudents();
+
+    @Query(value = "SELECT delete_admin_and_groups(:groupAdminId)",nativeQuery = true)
+    void deleteByAdminId(Long groupAdminId);
+
 }

@@ -18,7 +18,7 @@ public class PersonMapper {
 
         Person person = new Person();
 
-        if(dto.getId() != null) {
+        if (dto.getId() != null) {
             person.setId(dto.getId());
         }
 
@@ -64,17 +64,15 @@ public class PersonMapper {
         }
         person.setWeight(dto.getWeight());
 
-        if(Utils.isEmptyOrNull(dto.getNationality())) {
+        if (Utils.isEmptyOrNull(dto.getNationality())) {
             log.error("Nationality cannot be empty");
             throw new InvalidFieldException("Поле национальность обязательная");
         }
-        if(Objects.nonNull(dto.getNationality())){
-            try{
-                person.setNationality(Country.valueOf(dto.getNationality()));
-            }catch(IllegalArgumentException e){
-                log.error("Invalid nationality: {}", dto.getNationality());
-                throw new InvalidFieldException("Национальность: " + dto.getNationality() +" недоступна");
-            }
+        try {
+            person.setNationality(Country.valueOf(dto.getNationality()));
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid nationality: {}", dto.getNationality());
+            throw new InvalidFieldException("Национальность: " + dto.getNationality() + " недоступна");
         }
 
         if (Utils.isEmptyOrNull(dto.getPassportID()) || dto.getPassportID().length() < 10) {
@@ -85,7 +83,7 @@ public class PersonMapper {
 
         person.setPassportID(dto.getPassportID());
 
-        if(Objects.nonNull(dto.getCreatorDto())){
+        if (Objects.nonNull(dto.getCreatorDto())) {
             person.setCreator(UserMapper.toEntity(dto.getCreatorDto()));
         }
 

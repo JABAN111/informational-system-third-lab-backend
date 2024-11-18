@@ -26,7 +26,7 @@ public class StudyGroupDto {
 
     private long expelledStudents; //Значение поля должно быть больше 0
 
-    private int transferredStudents ; //Значение поля должно быть больше 0
+    private int transferredStudents; //Значение поля должно быть больше 0
 
     private String formOfEducation; //Поле может быть null
 

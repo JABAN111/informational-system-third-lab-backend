@@ -11,8 +11,12 @@ import is.fistlab.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final AdminProcessingService adminProcessingService;
 
-    public JwtAuthenticationResponse signUp(UserDto requestDto) {
+    public JwtAuthenticationResponse signUp(final UserDto requestDto) {
 
         var user = User.builder()
                 .username(requestDto.getUsername())
@@ -41,10 +45,9 @@ public class AuthServiceImpl implements AuthService {
         return new JwtAuthenticationResponse(jwt);
     }
 
-    private User setAdminOrAddToWaitList(User userSavedInRepository) {
+    private User setAdminOrAddToWaitList(final User userSavedInRepository) {
         var toReturn = userSavedInRepository;
         if (!adminProcessingService.isAnyAdminExist()) {
-            System.out.println(adminProcessingService.getAllPotentialAdmins().size());
             userSavedInRepository.setRole(UserRole.ROLE_ADMIN);
             toReturn = userService.updateUser(userSavedInRepository);
         } else {
@@ -54,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-    public JwtAuthenticationResponse signIn(UserDto request) {
+    public JwtAuthenticationResponse signIn(final UserDto request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()
@@ -66,5 +69,31 @@ public class AuthServiceImpl implements AuthService {
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
+    }
+
+    @Override
+    public UserRole getUserRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            User currentUser = (User) principal;
+
+            return currentUser.getRole();
+        }
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            User currentUser = (User) principal;
+
+            return currentUser.getUsername();
+        }
+        return null;
     }
 }

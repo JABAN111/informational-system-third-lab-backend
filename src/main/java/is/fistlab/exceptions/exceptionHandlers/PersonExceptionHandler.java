@@ -15,25 +15,25 @@ public class PersonExceptionHandler {
 
     @ExceptionHandler(PersonNotUnique.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Response<String> personNotUnique(PersonNotUnique exc){
+    public Response<String> personNotUnique(PersonNotUnique exc) {
         return new Response<>(exc.getMessage());
     }
 
     @ExceptionHandler(PersonNotExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Response<String> personNotExist(PersonNotExistException exc){
+    public Response<String> personNotExist(PersonNotExistException exc) {
         return new Response<>(exc.getMessage());
     }
 
     @ExceptionHandler(InvalidActionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Response<String> personNotExist(InvalidActionException exc){
+    public Response<String> personNotExist(InvalidActionException exc) {
         return new Response<>(exc.getMessage());
     }
 
     @ExceptionHandler(NotEnoughRights.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Response<String> notEnoughRights(NotEnoughRights exc){
+    public Response<String> notEnoughRights(NotEnoughRights exc) {
         return new Response<>(exc.getMessage());
     }
 }

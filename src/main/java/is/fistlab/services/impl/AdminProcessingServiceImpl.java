@@ -6,7 +6,6 @@ import is.fistlab.database.enums.UserRole;
 import is.fistlab.database.repositories.PotentialAdminRepository;
 import is.fistlab.database.repositories.UserRepository;
 import is.fistlab.services.AdminProcessingService;
-import is.fistlab.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,12 +19,11 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class AdminProcessingServiceImpl implements AdminProcessingService {
-    private final UserService userService;
     private final UserRepository userRepository;
     private final PotentialAdminRepository adminRepository;
 
     @Override
-    public boolean isAnyAdminExist(){
+    public boolean isAnyAdminExist() {
         return !userRepository.findAllByRole(UserRole.ROLE_ADMIN).isEmpty();
     }
 
@@ -34,12 +32,12 @@ public class AdminProcessingServiceImpl implements AdminProcessingService {
     }
 
     @Override
-    public Page<PotentialAdmin> getPotentialAdmins(Pageable pageable) {
+    public Page<PotentialAdmin> getPotentialAdmins(final Pageable pageable) {
         return adminRepository.findAll(pageable);
     }
 
     @Override
-    public void addUserToWaitingList(User user) {
+    public void addUserToWaitingList(final User user) {
         PotentialAdmin admin = new PotentialAdmin();
         admin.setUser(user);
         admin.setWantedRole(UserRole.ROLE_ADMIN);
@@ -47,7 +45,7 @@ public class AdminProcessingServiceImpl implements AdminProcessingService {
     }
 
     @Override
-    public void removeUserFromWaitingList(User user) {
+    public void removeUserFromWaitingList(final User user) {
         assert user != null;
         adminRepository.removeByUser(user);
         log.info("user: {} deleted", user);
@@ -55,51 +53,35 @@ public class AdminProcessingServiceImpl implements AdminProcessingService {
 
     @Transactional
     @Override
-    public void rejectUserForAdminRole(User user) {
+    public void rejectUserForAdminRole(final User user) {
         assert user != null;
         adminRepository.removeByUser(user);
         log.info("user: {} rejected admin role", user);
     }
+
     /**
-     *
      * @param id - ид в очереди потенциальных админов, НЕ ИД ПОЛЬЗОВАТЕЛЯ
-     * @param user
-     * @return
      */
     @Override
     @Transactional
-    public User giveAdminRoleToUser(Long id, User user) {
-        //строка из таблицы с админами
+    public void giveAdminRoleToUser(final Long id, final User user) {
         var potentialAdmin = adminRepository.findById(id);
 
-        if(potentialAdmin.isEmpty()){
+        if (potentialAdmin.isEmpty()) {
             log.error("Potential admin with id {} does not exist", id);
-            //fixme
             throw new RuntimeException("Potential admin with id " + id + " does not exist");
         }
 
         PotentialAdmin admin = potentialAdmin.get();
         var wantAdminRole = admin.getUser();
         var userFromRepThatWantedAdminRole = userRepository.findByUsername(wantAdminRole.getUsername());
-        userFromRepThatWantedAdminRole.setRole(UserRole.ROLE_ADMIN);
+        userFromRepThatWantedAdminRole
+                .setRole(UserRole.ROLE_ADMIN);
 
         System.out.println(userFromRepThatWantedAdminRole);
         System.out.println(admin);
-//        wantAdminRole.setRole(UserRole.ROLE_ADMIN);
         userRepository.save(userFromRepThatWantedAdminRole);
         removeUserFromWaitingList(user);
-        return wantAdminRole;
     }
-
-
-    @Override
-    public boolean isPotentialAdminExist(Long id){
-        return adminRepository.findById(id).isPresent();
-    }
-
-//    @Override
-//    public boolean isPotentialAdminExist(Long id){
-//        return adminRepository.findById(id).isPresent();
-//    }
 
 }

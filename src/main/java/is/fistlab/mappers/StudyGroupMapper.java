@@ -13,12 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 public class StudyGroupMapper {
 
     public static StudyGroup toEntity(StudyGroupDto dto) {
-        log.info("получена dto {}",dto);
+        log.info("получена dto {}", dto);
         assert dto != null : "StudyGroupDto cannot be null";
 
         StudyGroup studyGroup = new StudyGroup();
 
-        if(dto.getId() != null) {
+        if (dto.getId() != null) {
             studyGroup.setId(dto.getId());
         }
 

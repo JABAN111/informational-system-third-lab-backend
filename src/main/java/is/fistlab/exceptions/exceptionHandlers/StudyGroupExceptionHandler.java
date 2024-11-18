@@ -13,6 +13,6 @@ public class StudyGroupExceptionHandler {
     @ExceptionHandler(StudyGroupAlreadyExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response<String> StudyGroupAlreadyExistException(StudyGroupAlreadyExistException e) {
-        return new Response<> (e.getMessage());
+        return new Response<>(e.getMessage());
     }
 }

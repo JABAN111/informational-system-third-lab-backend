@@ -1,6 +1,6 @@
 package is.fistlab.controllers;
 
-import is.fistlab.database.entities.Coordinates;
+import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
@@ -27,22 +27,22 @@ public class StudyGroupController {
 
     @PostMapping("/create-new-group")
     public ResponseEntity<Response<StudyGroup>> createStudyGroup(@RequestBody StudyGroupDto dto) {
-        return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана",studyGroupService.createStudyGroup(dto)));
+        return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана", studyGroupService.createStudyGroup(dto)));
     }
 
-@GetMapping("/get-all-groups")
-public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(required = false) String sortBy,
-        @RequestParam(required = false) String sortDirection
-) {
+    @GetMapping("/get-all-groups")
+    public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
 
-    var pageable = studyGroupService.getPageAfterSort(page, size, sortBy, sortDirection);
-    Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
+        var pageable = studyGroupService.getPageAfterSort(page, size, sortBy, sortDirection);
+        Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
 
-    return ResponseEntity.ok(new Response<>(studyGroupPage));
-}
+        return ResponseEntity.ok(new Response<>(studyGroupPage));
+    }
 
     @DeleteMapping("/delete-group-by-id/{id}")
     public ResponseEntity<Response<String>> deleteStudyGroupById(@PathVariable Long id) {
@@ -51,7 +51,7 @@ public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
     }
 
     @PatchMapping("/update-group-by-id/{id}")
-    public ResponseEntity<Response<StudyGroup>> updateStudyGroupById(@PathVariable Long id,@RequestBody StudyGroupDto dto) {
+    public ResponseEntity<Response<StudyGroup>> updateStudyGroupById(@PathVariable Long id, @RequestBody StudyGroupDto dto) {
         return ResponseEntity.ok(
                 new Response<>(
                         "Группа с названием " + dto.getName() + " успешно обновлена",
@@ -82,7 +82,7 @@ public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
     }
 
     @GetMapping("/total-expelled-students")
-    public ResponseEntity<Response<Integer>> getCountOfExpelledStudents(){
+    public ResponseEntity<Response<Integer>> getCountOfExpelledStudents() {
         Integer cnt = studyGroupService.getCountOfExpelledStudents();
         return ResponseEntity.ok(new Response<>(cnt));
     }
@@ -106,16 +106,19 @@ public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
             @RequestParam(required = false) Float averageMark,
             @RequestParam(required = false) Long expelledStudents,
             @RequestParam(required = false) Integer transferredStudents,
-            @RequestParam(required = false) Coordinates coordinates,
+            @RequestParam(required = false) Person admin,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-
+        log.info("Информация о перце: {}", admin);
         // Вызов метода сервиса с фильтрацией
         List<StudyGroup> studyGroups = studyGroupService.filterStudyGroups(
-                name, studentsCount, formOfEducation, semester, createdAfter,
-                shouldBeExpelled, averageMark, expelledStudents, transferredStudents, coordinates
+                name, studentsCount,
+                formOfEducation, semester,
+                createdAfter, shouldBeExpelled,
+                averageMark, expelledStudents,
+                transferredStudents, admin
         );
 
         // Пагинация результатов

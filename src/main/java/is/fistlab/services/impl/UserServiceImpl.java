@@ -5,22 +5,18 @@ import is.fistlab.database.repositories.UserRepository;
 import is.fistlab.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    @Value("${token.salt}")
-    private String SALT;
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -40,31 +36,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         userRepository.getReferenceById(user.getId());
-        //todo что блять здесь происходило
-//        user.setPassword(PasswordProcessing.encryptPassword(user.getPassword(),SALT.getBytes()));
-//        user.setPassword(user.getPassword());
         User newUser = userRepository.save(user);
         log.info("{} updated successfully",user.getUsername());
         return newUser;
     }
 
-    @Transactional
-    @Override
-    public void deleteUser(java.lang.Long id) {
-        userRepository.deleteById(id);
-        log.info("User with id: {} deleted successfully",id);
-    }
-
-    @Override
-    public User getUser(java.lang.Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()) {
-            log.info("User with id: {} found", id);
-            return user.get();
-        }
-        log.error("User with id: {} not found", id);
-        return null;
-    }
 
     @Override
     public boolean isUserExists(String username) {
@@ -88,14 +64,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsService getUserDetailsService() {
         return this::getUserByUsername;
-    }
-
-    @Override
-    public User getUser(User user) {
-        if (!isUserExists(user.getUsername())){
-            return null;//todo добавить кастомные ошибки
-        }
-        return userRepository.findByUsername(user.getUsername());
     }
 
 }

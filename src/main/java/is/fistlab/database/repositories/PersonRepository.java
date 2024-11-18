@@ -4,16 +4,13 @@ import is.fistlab.database.entities.Person;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    Optional<Person> findPersonByPassportID(String passportID);
+    Optional<Person> findPersonByPassportID(final String passportID);
 
-    @Query("SELECT COUNT(s) FROM StudyGroup s WHERE s.groupAdmin.id = :personId")
-    long countStudyGroupsByPersonId(@Param("personId") Long personId);
-//    List<Person> findAll();
-    Page<Person> findAll(Pageable pageable);
+    @NonNull
+    Page<Person> findAll(@NonNull final Pageable pageable);
 }

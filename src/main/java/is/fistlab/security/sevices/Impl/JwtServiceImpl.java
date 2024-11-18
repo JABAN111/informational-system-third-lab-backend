@@ -1,10 +1,11 @@
 package is.fistlab.security.sevices.Impl;
 
+import io.jsonwebtoken.JwtException;
 import is.fistlab.database.entities.User;
-
+import is.fistlab.exceptions.auth.JwtTokenExpired;
 import is.fistlab.security.sevices.JwtService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,7 +30,7 @@ public class JwtServiceImpl implements JwtService {
      * @param token токен
      * @return имя пользователя
      */
-    public String extractUserName(String token) {
+    public String extractUserName(final String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -39,7 +40,7 @@ public class JwtServiceImpl implements JwtService {
      * @param userDetails данные пользователя
      * @return токен
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(final UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User customUserDetails) {
             claims.put("id", customUserDetails.getId());
@@ -56,9 +57,11 @@ public class JwtServiceImpl implements JwtService {
      * @param userDetails данные пользователя
      * @return true, если токен валиден
      */
-    public boolean isTokenValid(final String token,final UserDetails userDetails) {
+    public boolean isTokenValid(final String token,
+                                final UserDetails userDetails) {
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (userName.equals(userDetails.getUsername()))
+                && !isTokenExpired(token);
     }
 
     /**
@@ -69,7 +72,8 @@ public class JwtServiceImpl implements JwtService {
      * @param <T>             тип данных
      * @return данные
      */
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+    private <T> T extractClaim(final String token,
+                               final Function<Claims, T> claimsResolvers) {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
@@ -81,13 +85,18 @@ public class JwtServiceImpl implements JwtService {
      * @param userDetails данные пользователя
      * @return токен
      */
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    private String generateToken(final Map<String, Object> extraClaims,
+                                 final UserDetails userDetails) {
+        final int minute = 60_000;
+        final int fifteenMinutes = minute * 15;
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60_000 * 12000))//15 минут
-                .signWith(getSigningKey()).compact();
+                .expiration(
+                        new Date(System.currentTimeMillis()
+                                + fifteenMinutes)//15 минут
+                ).signWith(getSigningKey()).compact();
     }
 
     /**
@@ -96,7 +105,7 @@ public class JwtServiceImpl implements JwtService {
      * @param token токен
      * @return true, если токен просрочен
      */
-    private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(final String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -106,7 +115,7 @@ public class JwtServiceImpl implements JwtService {
      * @param token токен
      * @return дата истечения
      */
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(final String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -116,8 +125,16 @@ public class JwtServiceImpl implements JwtService {
      * @param token токен
      * @return данные
      */
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
+    private Claims extractAllClaims(final String token) {
+        try {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        } catch (JwtException e) {
+            throw new JwtTokenExpired("Invalid token");
+        }
     }
 
     /**

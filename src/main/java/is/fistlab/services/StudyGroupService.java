@@ -1,6 +1,6 @@
 package is.fistlab.services;
 
-import is.fistlab.database.entities.Coordinates;
+import is.fistlab.database.entities.Person;
 import is.fistlab.database.entities.StudyGroup;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
@@ -15,7 +15,6 @@ import java.util.Map;
 public interface StudyGroupService {
     StudyGroup createStudyGroup(StudyGroupDto dto);
     Page<StudyGroup> getAllStudyGroups(Pageable pageable);
-    StudyGroup getStudyGroup(Long id);
     StudyGroup updateStudyGroup(Long id, StudyGroupDto dto);
     void deleteStudyGroup(Long id);
 
@@ -29,8 +28,7 @@ public interface StudyGroupService {
                                        FormOfEducation formOfEducation,
                                        Semester semester, LocalDate createdAfter,
                                        Long shouldBeExpelled, Float averageMark,
-                                       Long expelledStudents, Integer transferredStudents,
-                                       Coordinates coordinates);
+                                       Long expelledStudents, Integer transferredStudents, Person person);
 
     Page<StudyGroup> getPagedResult(List<StudyGroup> studyGroups, Pageable pageable);
 

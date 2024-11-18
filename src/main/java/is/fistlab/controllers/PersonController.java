@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/manage/persons")
 @Slf4j
@@ -22,16 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PersonController {
     private PersonService personService;
-
-//    @GetMapping("/persons-names")
-//    @CrossOrigin
-//    @Deprecated
-//    public ResponseEntity<Response<List<Person>>> getAllPersonsName() {
-//        List<Person> personList = personService.getAllPersons();
-//        return ResponseEntity.ok(
-//                new Response<>(personList)
-//        );
-//    }
 
     @GetMapping("/persons-names")
     public ResponseEntity<Response<Page<Person>>> getAllPersonsName(
@@ -48,7 +36,7 @@ public class PersonController {
         Person person = PersonMapper.toEntity(dto);
         personService.createPerson(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new Response<>("Пользователь успешно создан",person)
+                new Response<>("Пользователь успешно создан", person)
         );
 //        return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
@@ -58,7 +46,7 @@ public class PersonController {
         Person person = PersonMapper.toEntity(dto);
         var updatedPerson = personService.updatePerson(person);
         return ResponseEntity.ok(new Response<>("Данные о человеке: " + dto.getName() + " успешно обновлены"
-                ,updatedPerson));
+                , updatedPerson));
     }
 
     @DeleteMapping("delete-person-by-id/{id}")

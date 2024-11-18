@@ -3,7 +3,7 @@ spring:
     name: FirstLab
 
   datasource:
-    url: jdbc:postgresql://localhost:23210/habrdb
+    url: jdbc:postgresql://localhost:5432/habrdb
     username: user
     password: user
 
@@ -19,7 +19,7 @@ spring:
             level: FINE
             file: stdout
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
 
 server:
   error:
@@ -27,12 +27,9 @@ server:
     whitelabel:
       enabled: false
 
-  web:
-    resources:
-      add-mappings: false
 
 token:
   signing:
     key: Q5v1CXQ1Y64cayU84BnlR3Az9fVFe8Bvn6Mrf68bX5U=
   salt:
-    D&D
+    PBKDF2WithHmacSHA1

@@ -40,7 +40,7 @@ public class Person implements CreatorAware {
     private Country nationality; //Поле не может быть null
     @Column(nullable = false, unique = true)
     @Size(min = 10)
-    //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример ису ид)
+    //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример Ису ид)
     private String passportID; //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
 
     @ManyToOne(fetch = FetchType.EAGER)

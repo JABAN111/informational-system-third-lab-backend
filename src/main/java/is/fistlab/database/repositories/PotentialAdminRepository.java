@@ -5,10 +5,13 @@ import is.fistlab.database.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PotentialAdminRepository extends JpaRepository<PotentialAdmin, Long> {
-    void removeByUser(User user);
-    Page<PotentialAdmin> findAll(Pageable pageable);
+    void removeByUser(final User user);
+
+    @NonNull
+    Page<PotentialAdmin> findAll(@NonNull final Pageable pageable);
 }

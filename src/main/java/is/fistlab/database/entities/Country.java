@@ -5,5 +5,5 @@ public enum Country {
     USA,
     VATICAN,
     THAILAND,
-    JAPAN;
+    JAPAN
 }

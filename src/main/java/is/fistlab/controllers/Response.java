@@ -20,11 +20,11 @@ public class Response<T> {
     }
 
 
-    public Response(String message){
-        this(message,null);
+    public Response(String message) {
+        this(message, null);
     }
 
-    public Response(T body){
-        this(null,body);
+    public Response(T body) {
+        this(null, body);
     }
 }

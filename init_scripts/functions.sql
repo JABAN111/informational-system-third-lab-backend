@@ -64,3 +64,19 @@ SET group_admin_id = new_group_admin_id
 WHERE id = group_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+--    не в рамках доп заданий
+CREATE OR REPLACE FUNCTION delete_admin_and_groups(admin_id bigint)
+    RETURNS void AS
+$$
+BEGIN
+DELETE FROM study_group
+WHERE group_admin_id = admin_id;
+
+DELETE FROM person
+WHERE id = admin_id;
+
+END;
+$$ LANGUAGE plpgsql;
