@@ -48,6 +48,8 @@ public class StudyGroupServiceImpl implements StudyGroupService {
                     ("Study group with id " + studyGroupToSave.getId() + " already exists");
         }
         studyGroupToSave.setCreator(authenticationUtils.getCurrentUserFromContext());
+//        log.debug("studyGroupToSave: {},",studyGroupToSave);
+        log.debug("len(name) = {}", studyGroupToSave.getName().length());
         var savedStudyGroup = studyGroupRepository.save(studyGroupToSave);
         log.info("Study group created: {}", studyGroupToSave);
         return savedStudyGroup;

@@ -23,13 +23,18 @@ public class StudyGroupMapper {
         }
 
         if (Utils.isEmptyOrNull(dto.getName())) {
-            log.error("Name cannot be empty");
+            log.warn("Name cannot be empty");
             throw new InvalidFieldException("Имя группы не может быть пустым");
         }
+        if (dto.getName().length() > 255) {
+            log.warn("Name cannot exceed 255 characters");
+            throw new InvalidFieldException("Имя группы должно быть меньше 255 строк");
+        }
+
         studyGroup.setName(dto.getName());
 
         if (dto.getCoordinates() == null) {
-            log.error("Coordinates cannot be null");
+            log.warn("Coordinates cannot be null");
             throw new InvalidFieldException("Координаты не могут быть пустыми");
         }
         studyGroup.setCoordinates(dto.getCoordinates());

@@ -41,6 +41,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void deletePersonById(Long id) {
         Optional<Person> deletingPerson = personRepository.findById(id);
+
         if(deletingPerson.isEmpty()){
             log.error("Person with id: {} does not exist", id);
             throw new PersonNotExistException("Пользователя с таким id не существует");

@@ -26,6 +26,12 @@ public class PersonMapper {
             log.error("Name cannot be empty");
             throw new InvalidFieldException("Имя человека должно быть указано");
         }
+
+        if (dto.getName().length() > 255) {
+            log.warn("Name cannot exceed 255 characters");
+            throw new InvalidFieldException("Имя человека должно быть меньше 255 строк");
+        }
+
         person.setName(dto.getName());
 
         if (dto.getEyeColor() != null) {

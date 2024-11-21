@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-//todo проверить, как нормально включить его использование
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -48,7 +48,6 @@ public class StudyGroup implements CreatorAware {
     private Long shouldBeExpelled; //Значение поля должно быть больше 0, Поле не может быть null
 
     @Min(1)
-    //todo добавить . ,
     private float averageMark; //Значение поля должно быть больше 0
 
     @Enumerated(EnumType.STRING)
