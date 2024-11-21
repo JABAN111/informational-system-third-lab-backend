@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @AllArgsConstructor
-@CrossOrigin
 public class AuthorizationController {
+
     private final AuthService authenticationService;
 
     @PostMapping("/create-user")
@@ -26,7 +26,7 @@ public class AuthorizationController {
     @GetMapping("/is-token-valid")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<String> isTokenValid() {
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(authenticationService.getUserRole().toString());
     }
 
     @GetMapping("/get-role")
@@ -38,7 +38,7 @@ public class AuthorizationController {
     }
 
     @GetMapping("/get-username")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Response<String>> getUsername() {
         return ResponseEntity.ok(
                 new Response<>(null, authenticationService.getUsername())
