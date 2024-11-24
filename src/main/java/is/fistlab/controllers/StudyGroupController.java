@@ -1,23 +1,28 @@
 package is.fistlab.controllers;
 
-import is.fistlab.database.entities.Person;
-import is.fistlab.database.entities.StudyGroup;
+import is.fistlab.database.entities.*;
+import is.fistlab.database.enums.Color;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
+import is.fistlab.dto.PersonDto;
 import is.fistlab.dto.StudyGroupDto;
+import is.fistlab.dto.UserDto;
+import is.fistlab.security.sevices.Impl.AuthServiceImpl;
 import is.fistlab.services.StudyGroupService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 @Slf4j
 @RequestMapping("/api/v1/manage/study-groups")
@@ -25,10 +30,11 @@ import java.util.Map;
 @AllArgsConstructor
 public class StudyGroupController {
     private final StudyGroupService studyGroupService;
+    private final AuthServiceImpl authServiceImpl;
 
     @PostMapping("/create-new-group")
     public ResponseEntity<Response<StudyGroup>> createStudyGroup(@RequestBody StudyGroupDto dto) {
-        return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана", studyGroupService.createStudyGroup(dto)));
+        return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана", studyGroupService.add(dto)));
     }
 
     @GetMapping("/get-all-groups")
@@ -69,6 +75,7 @@ public class StudyGroupController {
     }
 
     @DeleteMapping("/delete/by-group-admin/{name}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<String>> deleteStudyGroupAdmin(@PathVariable String name) {
         studyGroupService.deleteByGroupAdminName(name);
         return ResponseEntity.ok(new Response<>(
@@ -96,6 +103,39 @@ public class StudyGroupController {
         );
     }
 
+
+    @GetMapping("/updates")
+    public DeferredResult<ResponseEntity<Page<StudyGroup>>> getStudyGroupUpdates(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        DeferredResult<ResponseEntity<Page<StudyGroup>>> deferredResult = new DeferredResult<>(10_000L);//10 sec
+
+        ForkJoinPool.commonPool().submit(() -> {
+            try {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
+
+                deferredResult.setResult(ResponseEntity.ok(studyGroupPage));
+            } catch (Exception e) {
+                log.error("Error while processing updates: {}", e.getMessage(), e);
+                deferredResult.setErrorResult(
+                        ResponseEntity.status(500).body("Ошибка при получении данных: " + e.getMessage())
+                );
+            }
+        });
+
+        deferredResult.onTimeout(() -> {
+            log.warn("Request timed out");
+            deferredResult.setErrorResult(
+                    ResponseEntity.status(408).body("Запрос превысил тайм-аут ожидания")
+            );
+        });
+
+        return deferredResult;
+    }
+
+
     @GetMapping("/filter")
     public ResponseEntity<Response<Page<StudyGroup>>> getFilteredStudyGroups(
             @RequestParam(required = false) String name,
@@ -121,7 +161,6 @@ public class StudyGroupController {
                 transferredStudents, admin
         );
 
-        // Пагинация результатов
         Page<StudyGroup> studyGroupPage = studyGroupService.getPagedResult(studyGroups, pageable);
 
         return ResponseEntity.ok(new Response<>(studyGroupPage));

@@ -1,21 +1,27 @@
 package is.fistlab.services.impl;
 
-import is.fistlab.database.entities.Person;
-import is.fistlab.database.entities.StudyGroup;
+import is.fistlab.database.entities.*;
+import is.fistlab.database.enums.Color;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
+import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.database.repositories.specifications.StudyGroupSpecifications;
+import is.fistlab.dto.PersonDto;
 import is.fistlab.dto.StudyGroupDto;
+import is.fistlab.dto.UserDto;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
+import is.fistlab.mappers.PersonMapper;
 import is.fistlab.mappers.StudyGroupMapper;
+import is.fistlab.security.sevices.Impl.AuthServiceImpl;
 import is.fistlab.services.StudyGroupService;
 import is.fistlab.utils.AuthenticationUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +36,21 @@ import java.util.Optional;
 public class StudyGroupServiceImpl implements StudyGroupService {
     private final StudyGroupRepository studyGroupRepository;
     private final AuthenticationUtils authenticationUtils;
+    private final AuthServiceImpl authServiceImpl;
+    private final PersonRepository personRepository;
 
     @Autowired
     public StudyGroupServiceImpl(StudyGroupRepository studyGroupRepository,
-                                 AuthenticationUtils authenticationUtils) {
+                                 AuthenticationUtils authenticationUtils, AuthServiceImpl authServiceImpl, PersonRepository personRepository) {
         this.studyGroupRepository = studyGroupRepository;
         this.authenticationUtils = authenticationUtils;
+        this.authServiceImpl = authServiceImpl;
+        this.personRepository = personRepository;
     }
 
     @Transactional
     @Override
-    public StudyGroup createStudyGroup(StudyGroupDto dto) {
+    public StudyGroup add(StudyGroupDto dto) {
         StudyGroup studyGroupToSave = StudyGroupMapper.toEntity(dto);
         if (studyGroupToSave.getId() != null && studyGroupRepository.existsById(studyGroupToSave.getId())) {
             log.error("Study group with id {} already exists", studyGroupToSave.getId());
@@ -132,35 +142,33 @@ public class StudyGroupServiceImpl implements StudyGroupService {
                                               final Long shouldBeExpelled, final Float averageMark,
                                               final Long expelledStudents, final Integer transferredStudents,
                                               final Person admin) {
-        // Начинаем с пустой спецификации
         Specification<StudyGroup> specification = Specification.where(null);
 
-        // Применяем фильтры только если параметры не равны null
         if (Objects.nonNull(name)) {
             specification = specification.and(StudyGroupSpecifications.hasName(name));
         }
-        if (studentsCount != null) {
+        if (Objects.nonNull(studentsCount)) {
             specification = specification.and(StudyGroupSpecifications.hasStudentsCountGreaterThan(studentsCount));
         }
-        if (formOfEducation != null) {
+        if (Objects.nonNull(formOfEducation)) {
             specification = specification.and(StudyGroupSpecifications.hasFormOfEducation(formOfEducation));
         }
-        if (semester != null) {
+        if (Objects.nonNull(semester)) {
             specification = specification.and(StudyGroupSpecifications.hasSemester(semester));
         }
-        if (createdAfter != null) {
+        if (Objects.nonNull(createdAfter)) {
             specification = specification.and(StudyGroupSpecifications.createdAfter(createdAfter));
         }
-        if (shouldBeExpelled != null) {
+        if (Objects.nonNull(shouldBeExpelled)) {
             specification = specification.and(StudyGroupSpecifications.hasShouldBeExpelledGreaterThan(shouldBeExpelled));
         }
-        if (averageMark != null) {
+        if (Objects.nonNull(averageMark)) {
             specification = specification.and(StudyGroupSpecifications.hasAverageMarkGreaterThan(averageMark));
         }
-        if (expelledStudents != null) {
+        if (Objects.nonNull(expelledStudents)) {
             specification = specification.and(StudyGroupSpecifications.hasExpelledStudentsGreaterThan(expelledStudents));
         }
-        if (transferredStudents != null) {
+        if (Objects.nonNull(transferredStudents)) {
             specification = specification.and(StudyGroupSpecifications.hasTransferredStudentsGreaterThan(transferredStudents));
         }
 
@@ -168,7 +176,6 @@ public class StudyGroupServiceImpl implements StudyGroupService {
             specification = specification.and(StudyGroupSpecifications.hasAdmin(admin));
         }
 
-        // Выполняем запрос с применением фильтров
         return studyGroupRepository.findAll(specification);
     }
 
@@ -185,7 +192,7 @@ public class StudyGroupServiceImpl implements StudyGroupService {
                 "transferredStudents", "shouldBeExpelled",
                 "averageMark", "creationDate");
 
-        Sort sort = Sort.by("id"); // По умолчанию сортировка по id
+        Sort sort = Sort.by("id"); //sort by default
 
         if (Objects.nonNull(sortBy) && Objects.nonNull(sortDirection) && allowedSortFields.contains(sortBy)) {
             sort = Sort.by(sortBy);
@@ -200,4 +207,6 @@ public class StudyGroupServiceImpl implements StudyGroupService {
 
         return PageRequest.of(page, size, sort);
     }
+
+
 }

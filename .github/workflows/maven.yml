@@ -36,7 +36,7 @@ jobs:
     - name: Build with Maven
       env:
         SPRING_APPLICATION_NAME: FirstLab
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:23210/habrdb
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgreDB:5432/first
         SPRING_DATASOURCE_USERNAME: user
         SPRING_DATASOURCE_PASSWORD: user
         SPRING_JPA_SHOW_SQL: true

@@ -25,16 +25,14 @@ public class AuthorizationController {
 
     @GetMapping("/is-token-valid")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<String> isTokenValid() {
-        return ResponseEntity.ok(authenticationService.getUserRole().toString());
+    public Response<String> isTokenValid() {
+        return new Response<>("Токен валиден", authenticationService.getUserRole().toString());
     }
 
     @GetMapping("/get-role")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<Response<UserRole>> getUserRole() {
-        return ResponseEntity.ok(
-                new Response<>(authenticationService.getUserRole())
-        );
+    public Response<UserRole> getUserRole() {
+        return new Response<>(authenticationService.getUserRole());
     }
 
     @GetMapping("/get-username")
@@ -46,7 +44,9 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Response<JwtAuthenticationResponse>> login(@RequestBody UserDto dto) {
-        return ResponseEntity.ok(new Response<>(authenticationService.signIn(dto)));
+    public Response<JwtAuthenticationResponse> login(@RequestBody UserDto dto) {
+
+        return new Response<>(authenticationService.signIn(dto));
+
     }
 }

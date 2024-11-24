@@ -1,21 +1,42 @@
-CREATE OR REPLACE FUNCTION delete_by_group_admin(admin_name TEXT) RETURNS VOID AS
+CREATE OR REPLACE FUNCTION delete_by_group_admin(admin_name TEXT)
+RETURNS TEXT AS
 $$
+DECLARE
+group_name TEXT;
 BEGIN
-DELETE
+    -- Получаем имя группы, которую нужно удалить
+SELECT name
+INTO group_name
 FROM study_group
-WHERE ctid = (SELECT ctid
-              FROM study_group
-              WHERE group_admin_id = (SELECT id
-                                      FROM person
-                                      WHERE name = admin_name
-    LIMIT 1)
-    LIMIT 1);
+WHERE group_admin_id = (
+    SELECT id
+    FROM person
+    WHERE name = admin_name
+    LIMIT 1
+    )
+    LIMIT 1;
+
+-- Удаляем группу
+DELETE FROM study_group
+WHERE ctid = (
+    SELECT ctid
+    FROM study_group
+    WHERE group_admin_id = (
+        SELECT id
+        FROM person
+        WHERE name = admin_name
+    LIMIT 1
+    )
+    LIMIT 1
+    );
+
+-- Возвращаем имя удаленной группы
+RETURN group_name;
 END;
 $$ LANGUAGE plpgsql;
 
 
 -- Сгруппировать объекты по значению поля formOfEducation, вернуть количество элементов в каждой группе.
--- todo сюда можно materialized присобачить для удобства
 CREATE OR REPLACE FUNCTION count_by_form_of_education()
     RETURNS TABLE
             (

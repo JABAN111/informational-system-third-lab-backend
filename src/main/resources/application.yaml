@@ -3,7 +3,8 @@ spring:
     name: FirstLab
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/habrdb
+#    todo здесь менять на jdbc:postgresql://postgresql:5432/first при запуске с докера
+    url: jdbc:postgresql://localhost:5432/first
     username: user
     password: user
 
@@ -19,7 +20,7 @@ spring:
             level: FINE
             file: stdout
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
 server:
   error:

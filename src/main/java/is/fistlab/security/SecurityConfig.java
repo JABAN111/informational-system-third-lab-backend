@@ -45,7 +45,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/manage/**").authenticated()
+//                        .requestMatchers("/api/v1/manage/**").authenticated()
+                                .requestMatchers("/api/v1/manage/**").permitAll()
                         .requestMatchers("/api/v1/admin/console/**").authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

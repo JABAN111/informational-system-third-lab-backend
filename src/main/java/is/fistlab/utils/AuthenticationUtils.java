@@ -4,12 +4,14 @@ import is.fistlab.database.entities.CreatorAware;
 import is.fistlab.database.entities.User;
 import is.fistlab.database.enums.UserRole;
 import is.fistlab.exceptions.auth.NotEnoughRights;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
+@Slf4j
 public class AuthenticationUtils {
 
 
@@ -21,9 +23,19 @@ public class AuthenticationUtils {
     public void verifyAccess(CreatorAware creatorAware) {
         var user = getCurrentUserFromContext();
 
-        if (Objects.isNull(user.getRole()) || user.getRole() != UserRole.ROLE_ADMIN) {
+        if (Objects.isNull(user.getRole())) {
+
+            throw new RuntimeException("Ошибка сервера");
+        }
+
+        if(creatorAware.getCreator().getUsername().equals(user.getUsername())){
+            return;
+        }
+
+        if(user.getRole() != UserRole.ROLE_ADMIN) {
             throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
         }
+        return;
     }
 
     public User getCurrentUserFromContext(){

@@ -23,7 +23,6 @@
         <spring-boot.version>3.3.4</spring-boot.version>
         <springframefork.context>6.1.14</springframefork.context>
         <postgresql.version>42.5.4</postgresql.version>
-        <eclipselink.version>2.7.9</eclipselink.version>
         <jakarta.validation.version>2.0.2</jakarta.validation.version>
         <gson.version>2.10.1</gson.version>
         <jjwt.version>0.9.1</jjwt.version>
@@ -75,12 +74,6 @@
             <version>${spring-boot.version}</version>
         </dependency>
 
-        <!-- EclipseLink -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa</artifactId>
-            <version>${eclipselink.version}</version>
-        </dependency>
 
         <!-- Jakarta Validation API -->
         <dependency>

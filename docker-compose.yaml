@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:13.3
     environment:
-      POSTGRES_DB: "habrdb"
+      POSTGRES_DB: "first"
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "user"
     volumes:
@@ -20,3 +20,4 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+#docker compose down -v && docker compose build && docker compose up

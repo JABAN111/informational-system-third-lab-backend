@@ -100,4 +100,25 @@ public class PersonMapper {
 
         return person;
     }
+
+    public static PersonDto toDto(Person person) {
+        if (person == null) {
+            return null;
+        }
+
+        return PersonDto.builder()
+                .id(person.getId())
+                .name(person.getName())
+                .eyeColor(person.getEyeColor() != null ? person.getEyeColor().toString() : null)
+                .hairColor(person.getHairColor() != null ? person.getHairColor().toString() : null)
+                .location(person.getLocation())
+                .height(person.getHeight())
+                .weight(person.getWeight())
+                .nationality(person.getNationality() != null ? person.getNationality().toString() : null)
+                .passportID(person.getPassportID())
+                .creatorDto(person.getCreator() != null
+                        ? UserMapper.toDto(person.getCreator())
+                        : null)
+                .build();
+    }
 }

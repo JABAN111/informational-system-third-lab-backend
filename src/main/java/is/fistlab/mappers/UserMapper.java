@@ -42,4 +42,12 @@ public class UserMapper {
 
         return userBuilder.build();
     }
+
+    public static UserDto toDto(User creator) {
+        return UserDto.builder()
+                .username(creator.getUsername())
+                .password(creator.getPassword())
+                .role(creator.getRole().toString())
+                .build();
+    }
 }

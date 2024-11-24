@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface StudyGroupService {
-    StudyGroup createStudyGroup(StudyGroupDto dto);
+    StudyGroup add(StudyGroupDto dto);
     Page<StudyGroup> getAllStudyGroups(Pageable pageable);
     StudyGroup updateStudyGroup(Long id, StudyGroupDto dto);
     void deleteStudyGroup(Long id);
@@ -33,4 +33,5 @@ public interface StudyGroupService {
     Page<StudyGroup> getPagedResult(List<StudyGroup> studyGroups, Pageable pageable);
 
     Pageable getPageAfterSort(int page, int size, String sortBy, String sortDirection);
+
 }

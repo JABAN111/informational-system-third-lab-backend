@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="habrdb@localhost" uuid="ac28040c-e7cd-457b-972d-d43bbb4986a2">
+    <data-source source="LOCAL" name="first@localhost" uuid="ac28040c-e7cd-457b-972d-d43bbb4986a2">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

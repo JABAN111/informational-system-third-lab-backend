@@ -2,9 +2,7 @@ package is.fistlab.dto;
 
 import is.fistlab.database.entities.Coordinates;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +10,8 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @ToString
+@Builder
+@AllArgsConstructor
 public class StudyGroupDto {
 
     private Long id;
