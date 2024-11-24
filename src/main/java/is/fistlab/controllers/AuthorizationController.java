@@ -45,8 +45,13 @@ public class AuthorizationController {
 
     @PostMapping("/login")
     public Response<JwtAuthenticationResponse> login(@RequestBody UserDto dto) {
-
         return new Response<>(authenticationService.signIn(dto));
+    }
 
+    private void methodForIdiot(){
+        if(1==1){
+            System.out.println(2==2);
+        }
+        return;
     }
 }
