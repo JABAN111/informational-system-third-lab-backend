@@ -20,15 +20,6 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v5
         env:
-#          VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVA: true
-#          ACTIONS_RUNNER_DEBUG: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          LINTER_RULES_PATH: .github/linters/sun_checks.xml
 
-      - name: Debug Linter
-        run: cat .github/linters/sun_checks.xml
-
-      - name: Run Checkstyle wat
-        run: |
-          java -jar checkstyle.jar -c .github/linters/checkstyle.xml src/main/java/
