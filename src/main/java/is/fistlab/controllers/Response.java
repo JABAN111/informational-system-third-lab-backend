@@ -10,21 +10,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Response<T> {
-    private String message;
-    private Object body;
 
+    private final String message;
+    private final Object body;
 
-    public Response(String message, T body) {
+    public Response(final String message, final T body) {
         this.message = message;
         this.body = body;
     }
 
-
-    public Response(String message) {
+    public Response(final String message) {
         this(message, null);
     }
 
-    public Response(T body) {
+    public Response(final T body) {
         this(null, body);
     }
 }

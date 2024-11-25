@@ -1,7 +1,7 @@
 package is.fistlab.exceptions.dataBaseExceptions.studyGroup;
 
 public class StudyGroupNotExistException extends RuntimeException {
-    public StudyGroupNotExistException(String message) {
+    public StudyGroupNotExistException(final String message) {
         super(message);
     }
 }

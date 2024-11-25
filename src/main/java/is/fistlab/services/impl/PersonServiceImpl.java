@@ -18,17 +18,17 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
     private final AuthenticationUtils authenticationUtils;
     private final StudyGroupRepository studyGroupRepository;
 
-    @Transactional
     @Override
-    public void createPerson(Person person) {
-        if(personRepository.findPersonByPassportID(person.getPassportID()).isPresent()){
-            log.error("Person with passportID: {} already exist", person.getPassportID());
+    public void createPerson(final Person person) {
+        if (personRepository.findPersonByPassportID(person.getPassportID()).isPresent()) {
+            log.warn("Person with passportID: {} already exist", person.getPassportID());
             throw new PersonNotUnique("Паспорт пользователя должен быть уникальным");
         }
         var creator = authenticationUtils.getCurrentUserFromContext();
@@ -37,12 +37,11 @@ public class PersonServiceImpl implements PersonService {
         log.info("Created person: {}", person);
     }
 
-    @Transactional
     @Override
-    public void deletePersonById(Long id) {
+    public void deletePersonById(final Long id) {
         Optional<Person> deletingPerson = personRepository.findById(id);
 
-        if(deletingPerson.isEmpty()){
+        if (deletingPerson.isEmpty()) {
             log.error("Person with id: {} does not exist", id);
             throw new PersonNotExistException("Пользователя с таким id не существует");
         }
@@ -53,13 +52,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Page<Person> getAllPersons(Pageable pageable) {
+    public Page<Person> getAllPersons(final Pageable pageable) {
         return personRepository.findAll(pageable);
     }
 
     @Override
-    public Person updatePerson(Person person) {
-        if(!personRepository.existsById(person.getId())){
+    public Person updatePerson(final Person person) {
+        if (!personRepository.existsById(person.getId())) {
             log.error("Person with id: {} does not exist, update is impossible", person.getId());
             throw new PersonNotExistException("Пользователь не найден");
         }
@@ -70,6 +69,5 @@ public class PersonServiceImpl implements PersonService {
         log.info("Updated person: {}", updatedPerson);
         return person;
     }
-
 
 }

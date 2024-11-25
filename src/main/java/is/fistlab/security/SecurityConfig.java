@@ -32,7 +32,7 @@ public class SecurityConfig {
     private final UserService userService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
@@ -45,8 +45,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
-//                        .requestMatchers("/api/v1/manage/**").authenticated()
-                                .requestMatchers("/api/v1/manage/**").permitAll()
+                        .requestMatchers("/api/v1/manage/**").authenticated()
                         .requestMatchers("/api/v1/admin/console/**").authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -69,7 +68,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+    public AuthenticationManager authenticationManager(final AuthenticationConfiguration config)
             throws Exception {
         return config.getAuthenticationManager();
     }

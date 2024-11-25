@@ -1,7 +1,7 @@
 package is.fistlab.exceptions.dataBaseExceptions.studyGroup;
 
 public class StudyGroupAlreadyExistException extends RuntimeException {
-    public StudyGroupAlreadyExistException(String message) {
+    public StudyGroupAlreadyExistException(final String message) {
         super(message);
     }
 }

@@ -34,12 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+            @NonNull final HttpServletRequest request,
+            @NonNull final HttpServletResponse response,
+            @NonNull final FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            // Получаем токен из заголовка
+
             var authHeader = request.getHeader(HEADER_NAME);
             if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, BEARER_PREFIX)) {
                 filterChain.doFilter(request, response);
@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JwtTokenExpired ex) {
             log.error("JWT token expired");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getWriter().write("message: " +ex.getMessage());
+            response.getWriter().write("message: " + ex.getMessage());
             response.getWriter().flush();
         }
     }

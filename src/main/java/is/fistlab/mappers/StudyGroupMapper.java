@@ -9,16 +9,22 @@ import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.exceptions.mappers.InvalidFieldException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 @Slf4j
 public class StudyGroupMapper {
 
-    public static StudyGroup toEntity(StudyGroupDto dto) {
+    private static final int MAX_LENGTH = 255;
+    private static final float MIN_AVERAGE_MARK = 1f;
+    private static final float MAX_AVERAGE_MARK = 5f;
+
+    public static StudyGroup toEntity(final StudyGroupDto dto) {
         log.info("получена dto {}", dto);
         assert dto != null : "StudyGroupDto cannot be null";
 
         StudyGroup studyGroup = new StudyGroup();
 
-        if (dto.getId() != null) {
+        if (Objects.nonNull(dto.getId())) {
             studyGroup.setId(dto.getId());
         }
 
@@ -26,14 +32,14 @@ public class StudyGroupMapper {
             log.warn("Name cannot be empty");
             throw new InvalidFieldException("Имя группы не может быть пустым");
         }
-        if (dto.getName().length() > 255) {
-            log.warn("Name cannot exceed 255 characters");
-            throw new InvalidFieldException("Имя группы должно быть меньше 255 строк");
+        if (dto.getName().length() > MAX_LENGTH) {
+            log.warn("Name cannot exceed {} characters", MAX_LENGTH);
+            throw new InvalidFieldException("Имя группы должно быть меньше " + MAX_LENGTH + " строк");
         }
 
         studyGroup.setName(dto.getName());
 
-        if (dto.getCoordinates() == null) {
+        if (Objects.isNull(dto.getCoordinates())) {
             log.warn("Coordinates cannot be null");
             throw new InvalidFieldException("Координаты не могут быть пустыми");
         }
@@ -51,7 +57,7 @@ public class StudyGroupMapper {
             throw new InvalidFieldException("Некорректная форма обучения: " + dto.getFormOfEducation());
         }
 
-        if (dto.getShouldBeExpelled() == null || dto.getShouldBeExpelled() <= 0) {
+        if (Objects.isNull(dto.getShouldBeExpelled()) || dto.getShouldBeExpelled() <= 0) {
             log.warn("Should be expelled must be greater than 0");
             throw new InvalidFieldException("Количество студентов к отчислению должно быть больше 0");
         }
@@ -62,8 +68,8 @@ public class StudyGroupMapper {
             throw new InvalidFieldException("Средняя оценка должна быть больше 0");
         }
 
-        if(dto.getAverageMark() < 1f || dto.getAverageMark() > 5f) {
-            log.warn("Average mark must be between 1 and 5");
+        if (dto.getAverageMark() < MIN_AVERAGE_MARK || dto.getAverageMark() > MAX_AVERAGE_MARK) {
+            log.warn("Average mark must be between {} and {}", MIN_AVERAGE_MARK, MAX_AVERAGE_MARK);
             throw new InvalidFieldException("Средняя оценка должна быть в диапазоне между 1 и 5");
         }
 
@@ -76,10 +82,11 @@ public class StudyGroupMapper {
             throw new InvalidFieldException("Некорректный семестр: " + dto.getSemesterEnum());
         }
 
-        if (dto.getGroupAdmin() == null) {
+        if (Objects.isNull(dto.getGroupAdmin())) {
             log.warn("Group admin cannot be null");
             throw new InvalidFieldException("Администратор группы должен быть указан");
         }
+
         Person person = PersonMapper.toEntity(dto.getGroupAdmin());
         studyGroup.setGroupAdmin(person);
 

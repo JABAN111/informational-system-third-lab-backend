@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PotentialAdminRepository extends JpaRepository<PotentialAdmin, Long> {
-    void removeByUser(final User user);
+    void removeByUser(User user);
 
     @NonNull
-    Page<PotentialAdmin> findAll(@NonNull final Pageable pageable);
+    Page<PotentialAdmin> findAll(@NonNull Pageable pageable);
 }

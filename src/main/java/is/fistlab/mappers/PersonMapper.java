@@ -13,12 +13,15 @@ import java.util.Objects;
 @Slf4j
 public class PersonMapper {
 
-    public static Person toEntity(PersonDto dto) {
+    private static final int MAX_LENGTH = 255;
+    private static final int MAX_PASSPORT_ID_LENGTH = 10;
+
+    public static Person toEntity(final PersonDto dto) {
         assert dto != null : "PersonDto cannot be null";
 
         Person person = new Person();
 
-        if (dto.getId() != null) {
+        if (Objects.nonNull(dto.getId())) {
             person.setId(dto.getId());
         }
 
@@ -27,14 +30,14 @@ public class PersonMapper {
             throw new InvalidFieldException("Имя человека должно быть указано");
         }
 
-        if (dto.getName().length() > 255) {
-            log.warn("Name cannot exceed 255 characters");
+        if (dto.getName().length() > MAX_LENGTH) {
+            log.warn("Name cannot exceed {} characters", MAX_LENGTH);
             throw new InvalidFieldException("Имя человека должно быть меньше 255 строк");
         }
 
         person.setName(dto.getName());
 
-        if (dto.getEyeColor() != null) {
+        if (Objects.nonNull(dto.getEyeColor())) {
             try {
                 person.setEyeColor(Color.valueOf(dto.getEyeColor()));
             } catch (IllegalArgumentException e) {
@@ -43,7 +46,7 @@ public class PersonMapper {
             }
         }
 
-        if (dto.getHairColor() != null) {
+        if (Objects.nonNull(dto.getHairColor())) {
             try {
                 person.setHairColor(Color.valueOf(dto.getHairColor()));
             } catch (IllegalArgumentException e) {
@@ -81,12 +84,12 @@ public class PersonMapper {
             throw new InvalidFieldException("Национальность: " + dto.getNationality() + " недоступна");
         }
 
-        if (Utils.isEmptyOrNull(dto.getPassportID()) || dto.getPassportID().length() < 10) {
-            log.warn("Passport ID must be at least 10 characters long");
+        if (Utils.isEmptyOrNull(dto.getPassportID()) || dto.getPassportID().length() < MAX_PASSPORT_ID_LENGTH) {
+            log.warn("Passport ID must be at least {} characters long", MAX_PASSPORT_ID_LENGTH);
             throw new InvalidFieldException("Идентификационный номер паспорта должен содержать не менее 10 символов");
         }
 
-        if(dto.getPassportID().length() > 255){
+        if (dto.getPassportID().length() > MAX_LENGTH) {
             log.warn("Passport ID cannot exceed 255 characters");
             throw new InvalidFieldException("Паспорт ID должен быть не более 255 символов в длину");
         }
@@ -101,24 +104,4 @@ public class PersonMapper {
         return person;
     }
 
-    public static PersonDto toDto(Person person) {
-        if (person == null) {
-            return null;
-        }
-
-        return PersonDto.builder()
-                .id(person.getId())
-                .name(person.getName())
-                .eyeColor(person.getEyeColor() != null ? person.getEyeColor().toString() : null)
-                .hairColor(person.getHairColor() != null ? person.getHairColor().toString() : null)
-                .location(person.getLocation())
-                .height(person.getHeight())
-                .weight(person.getWeight())
-                .nationality(person.getNationality() != null ? person.getNationality().toString() : null)
-                .passportID(person.getPassportID())
-                .creatorDto(person.getCreator() != null
-                        ? UserMapper.toDto(person.getCreator())
-                        : null)
-                .build();
-    }
 }

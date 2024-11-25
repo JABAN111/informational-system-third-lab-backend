@@ -1,7 +1,7 @@
 package is.fistlab.exceptions.auth;
 
 public class NotEnoughRights extends RuntimeException {
-    public NotEnoughRights(String message) {
+    public NotEnoughRights(final String message) {
         super(message);
     }
 }

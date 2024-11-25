@@ -20,7 +20,8 @@ public class StudyGroupDto {
 
     private Coordinates coordinates; // Поле не может быть null
 
-    private LocalDate creationDate = LocalDate.now(); //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    private LocalDate creationDate = LocalDate.now();
 
     private long studentsCount; //Значение поля должно быть больше 0
 
@@ -37,7 +38,6 @@ public class StudyGroupDto {
     private String semesterEnum; //Поле может быть null
 
     private PersonDto groupAdmin; //Поле не может быть null
-
 
 }
 

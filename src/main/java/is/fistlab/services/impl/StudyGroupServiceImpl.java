@@ -1,27 +1,20 @@
 package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.*;
-import is.fistlab.database.enums.Color;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
-import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.database.repositories.specifications.StudyGroupSpecifications;
-import is.fistlab.dto.PersonDto;
 import is.fistlab.dto.StudyGroupDto;
-import is.fistlab.dto.UserDto;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
-import is.fistlab.mappers.PersonMapper;
 import is.fistlab.mappers.StudyGroupMapper;
-import is.fistlab.security.sevices.Impl.AuthServiceImpl;
 import is.fistlab.services.StudyGroupService;
 import is.fistlab.utils.AuthenticationUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,50 +26,37 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@AllArgsConstructor
+@Transactional
 public class StudyGroupServiceImpl implements StudyGroupService {
+
     private final StudyGroupRepository studyGroupRepository;
     private final AuthenticationUtils authenticationUtils;
-    private final AuthServiceImpl authServiceImpl;
-    private final PersonRepository personRepository;
 
-    @Autowired
-    public StudyGroupServiceImpl(StudyGroupRepository studyGroupRepository,
-                                 AuthenticationUtils authenticationUtils, AuthServiceImpl authServiceImpl, PersonRepository personRepository) {
-        this.studyGroupRepository = studyGroupRepository;
-        this.authenticationUtils = authenticationUtils;
-        this.authServiceImpl = authServiceImpl;
-        this.personRepository = personRepository;
-    }
-
-    @Transactional
     @Override
-    public StudyGroup add(StudyGroupDto dto) {
+    public StudyGroup add(final StudyGroupDto dto) {
         StudyGroup studyGroupToSave = StudyGroupMapper.toEntity(dto);
-        if (studyGroupToSave.getId() != null && studyGroupRepository.existsById(studyGroupToSave.getId())) {
-            log.error("Study group with id {} already exists", studyGroupToSave.getId());
-            throw new StudyGroupAlreadyExistException
-                    ("Study group with id " + studyGroupToSave.getId() + " already exists");
+        if (Objects.nonNull(studyGroupToSave.getId()) && studyGroupRepository.existsById(studyGroupToSave.getId())) {
+            log.warn("Study group with id {} already exists", studyGroupToSave.getId());
+            throw new StudyGroupAlreadyExistException("Study group with id " + studyGroupToSave.getId() + " already exists");
         }
         studyGroupToSave.setCreator(authenticationUtils.getCurrentUserFromContext());
-//        log.debug("studyGroupToSave: {},",studyGroupToSave);
-        log.debug("len(name) = {}", studyGroupToSave.getName().length());
         var savedStudyGroup = studyGroupRepository.save(studyGroupToSave);
         log.info("Study group created: {}", studyGroupToSave);
         return savedStudyGroup;
     }
 
     @Override
-    public Page<StudyGroup> getAllStudyGroups(Pageable pageable) {
+    public Page<StudyGroup> getAllStudyGroups(final Pageable pageable) {
         return studyGroupRepository.findAll(pageable);
     }
 
-    @Transactional
     @Override
-    public StudyGroup updateStudyGroup(Long id, StudyGroupDto dto) {
+    public StudyGroup updateStudyGroup(final Long id, final StudyGroupDto dto) {
         Optional<StudyGroup> optionalStudyGroup = studyGroupRepository.findById(id);
 
         if (optionalStudyGroup.isEmpty()) {
-            log.error("Study group with id {} does not exist", id);
+            log.warn("Study group with id {} does not exist", id);
             throw new StudyGroupNotExistException("Study group with id " + id + " does not exist");
         }
 
@@ -91,17 +71,16 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         return savedStudyGroup;
     }
 
-    @Transactional
     @Override
-    public void deleteStudyGroup(Long id) {
+    public void deleteStudyGroup(final Long id) {
         Optional<StudyGroup> optionalStudyGroup = studyGroupRepository.findById(id);
         if (optionalStudyGroup.isEmpty()) {
-            log.error("Study group with such id {} does not exist", id);
+            log.warn("Study group with such id {} does not exist", id);
             throw new StudyGroupNotExistException("Study group with id " + id + " does not exist");
         }
 
         if (!studyGroupRepository.existsById(id)) {
-            log.error("Study group does not exist: {}", id);
+            log.warn("Study group does not exist: {}", id);
             throw new StudyGroupNotExistException("Такой группы не существует");
         }
         authenticationUtils.verifyAccess(optionalStudyGroup.get());
@@ -116,12 +95,12 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     }
 
     @Override
-    public void updateAdminGroup(Long groupId, Long adminId) {
+    public void updateAdminGroup(final Long groupId, final Long adminId) {
         studyGroupRepository.updateGroupAdmin(groupId, adminId);
     }
 
     @Override
-    public void deleteByGroupAdminName(String groupAdminName) {
+    public void deleteByGroupAdminName(final String groupAdminName) {
         studyGroupRepository.deleteByAdminName(groupAdminName);
     }
 
@@ -145,35 +124,55 @@ public class StudyGroupServiceImpl implements StudyGroupService {
         Specification<StudyGroup> specification = Specification.where(null);
 
         if (Objects.nonNull(name)) {
-            specification = specification.and(StudyGroupSpecifications.hasName(name));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasName(name));
         }
         if (Objects.nonNull(studentsCount)) {
-            specification = specification.and(StudyGroupSpecifications.hasStudentsCountGreaterThan(studentsCount));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasStudentsCountGreaterThan(studentsCount));
         }
         if (Objects.nonNull(formOfEducation)) {
-            specification = specification.and(StudyGroupSpecifications.hasFormOfEducation(formOfEducation));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasFormOfEducation(formOfEducation));
         }
         if (Objects.nonNull(semester)) {
-            specification = specification.and(StudyGroupSpecifications.hasSemester(semester));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasSemester(semester));
         }
         if (Objects.nonNull(createdAfter)) {
-            specification = specification.and(StudyGroupSpecifications.createdAfter(createdAfter));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .createdAfter(createdAfter));
         }
         if (Objects.nonNull(shouldBeExpelled)) {
-            specification = specification.and(StudyGroupSpecifications.hasShouldBeExpelledGreaterThan(shouldBeExpelled));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasShouldBeExpelledGreaterThan(shouldBeExpelled));
         }
         if (Objects.nonNull(averageMark)) {
-            specification = specification.and(StudyGroupSpecifications.hasAverageMarkGreaterThan(averageMark));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasAverageMarkGreaterThan(averageMark));
         }
         if (Objects.nonNull(expelledStudents)) {
-            specification = specification.and(StudyGroupSpecifications.hasExpelledStudentsGreaterThan(expelledStudents));
+            specification = specification.and(
+                    StudyGroupSpecifications.
+                            hasExpelledStudentsGreaterThan(expelledStudents));
         }
         if (Objects.nonNull(transferredStudents)) {
-            specification = specification.and(StudyGroupSpecifications.hasTransferredStudentsGreaterThan(transferredStudents));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasTransferredStudentsGreaterThan(transferredStudents));
         }
 
         if (Objects.nonNull(admin)) {
-            specification = specification.and(StudyGroupSpecifications.hasAdmin(admin));
+            specification = specification.and(
+                    StudyGroupSpecifications
+                            .hasAdmin(admin));
         }
 
         return studyGroupRepository.findAll(specification);

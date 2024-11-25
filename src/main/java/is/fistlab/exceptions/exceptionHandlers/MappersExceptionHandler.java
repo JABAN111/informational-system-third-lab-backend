@@ -12,7 +12,7 @@ public class MappersExceptionHandler {
 
     @ExceptionHandler(InvalidFieldException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response<String> fieldInvalid(InvalidFieldException exc) {
+    public Response<String> fieldInvalid(final InvalidFieldException exc) {
         return new Response<>(exc.getMessage());
     }
 

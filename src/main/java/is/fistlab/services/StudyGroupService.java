@@ -14,16 +14,23 @@ import java.util.Map;
 
 public interface StudyGroupService {
     StudyGroup add(StudyGroupDto dto);
+
     Page<StudyGroup> getAllStudyGroups(Pageable pageable);
+
     StudyGroup updateStudyGroup(Long id, StudyGroupDto dto);
+
     void deleteStudyGroup(Long id);
 
-    List<Map<String,Object>> getCountFormsOfEducations();
+    List<Map<String, Object>> getCountFormsOfEducations();
+
     void updateAdminGroup(Long groupId, Long adminId);
+
     void deleteByGroupAdminName(String groupAdminName);
+
     List<Float> getUniqueStudyGroupByAverageMark();
 
     Integer getCountOfExpelledStudents();
+
     List<StudyGroup> filterStudyGroups(String name, Long studentsCount,
                                        FormOfEducation formOfEducation,
                                        Semester semester, LocalDate createdAfter,
@@ -33,5 +40,4 @@ public interface StudyGroupService {
     Page<StudyGroup> getPagedResult(List<StudyGroup> studyGroups, Pageable pageable);
 
     Pageable getPageAfterSort(int page, int size, String sortBy, String sortDirection);
-
 }

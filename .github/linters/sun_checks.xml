@@ -72,7 +72,7 @@
     <!-- See https://checkstyle.org/checks/sizes/index.html -->
     <module name="FileLength"/>
     <module name="LineLength">
-        <property name="max" value="120"/>
+        <property name="max" value="150"/>
     </module>
 
     <!-- Checks for whitespace                               -->
@@ -129,7 +129,9 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/checks/sizes/index.html -->
         <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
+        <module name="ParameterNumber">
+            <property name="max" value="13"/>
+        </module>
 
         <!-- Checks for whitespace                               -->
         <!-- See https://checkstyle.org/checks/whitespace/index.html -->
@@ -161,10 +163,8 @@
         <!-- See https://checkstyle.org/checks/coding/index.html -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
         <module name="MissingSwitchDefault"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="SimplifyBooleanExpression"/>

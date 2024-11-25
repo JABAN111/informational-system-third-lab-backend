@@ -47,10 +47,8 @@ public class AdminProcessingController {
     public ResponseEntity<Response<User>> rejectAdminRole(@RequestBody final PotentialAdmin potentialAdmin) {
         adminProcessingService
                 .rejectUserForAdminRole(potentialAdmin.getUser());
-        return ResponseEntity.ok
-                (new Response<>("Пользователь "
+        return ResponseEntity.ok(new Response<>("Пользователь "
                         + potentialAdmin.getUser().getUsername()
-                + " успешно получил отказ"));
+                        + " успешно получил отказ"));
     }
-
 }

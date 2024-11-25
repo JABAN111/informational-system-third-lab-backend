@@ -12,26 +12,26 @@ import java.util.Objects;
 @Slf4j
 public class UserMapper {
 
-    public static User toEntity(UserDto dto) {
+    public static User toEntity(final UserDto dto) {
         var userBuilder = User.builder();
 
         if (Objects.isNull(dto.getUsername())) {
-            log.error("Username is null");
+            log.warn("Username is null");
             throw new InvalidFieldException("Username is required");
         }
         if (Objects.isNull(dto.getPassword())) {
-            log.error("Password is null");
+            log.warn("Password is null");
             throw new InvalidFieldException("Password is required");
         }
         if (Objects.isNull(dto.getRole())) {
-            log.error("Role is null");
+            log.warn("Role is null");
             throw new InvalidFieldException("Role is required");
         }
         UserRole role;
         try {
             role = UserRole.valueOf(dto.getRole());
         } catch (IllegalArgumentException e) {
-            log.error("Invalid role");
+            log.warn("Invalid role");
             throw new InvalidFieldException("Invalid role");
         }
 
@@ -41,13 +41,5 @@ public class UserMapper {
                 .role(role);
 
         return userBuilder.build();
-    }
-
-    public static UserDto toDto(User creator) {
-        return UserDto.builder()
-                .username(creator.getUsername())
-                .password(creator.getPassword())
-                .role(creator.getRole().toString())
-                .build();
     }
 }

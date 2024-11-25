@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Entity
 @Data
@@ -42,7 +41,8 @@ public class Person implements CreatorAware {
     @Column(nullable = false, unique = true)
     @Size(min = 10)
     //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример Ису ид)
-    private String passportID; //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
+    //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
+    private String passportID;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private User creator;

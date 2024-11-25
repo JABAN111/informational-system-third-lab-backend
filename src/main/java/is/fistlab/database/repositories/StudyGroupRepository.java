@@ -22,8 +22,8 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long>, J
     @Query(value = "SELECT count_by_form_of_education()", nativeQuery = true)
     List<Map<String, Object>> getCountFormsOfEducations();
 
-    @Query(value = "SELECT delete_by_group_admin(:admin_name)", nativeQuery = true)
-    void deleteByAdminName(@Param("admin_name") String admin_name);
+    @Query(value = "SELECT delete_by_group_admin(:adminName)", nativeQuery = true)
+    void deleteByAdminName(@Param("adminName") String adminName);
 
     @Query(value = "SELECT unnest(get_unique_average_marks())", nativeQuery = true)
     List<Float> getUniqueGroupsByAverageMark();
@@ -31,7 +31,7 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long>, J
     @Query(value = "SELECT get_total_expelled_students()", nativeQuery = true)
     Integer getCountOfExpelledStudents();
 
-    @Query(value = "SELECT delete_admin_and_groups(:groupAdminId)",nativeQuery = true)
+    @Query(value = "SELECT delete_admin_and_groups(:groupAdminId)", nativeQuery = true)
     void deleteByAdminId(Long groupAdminId);
 
 }

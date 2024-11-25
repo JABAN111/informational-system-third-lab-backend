@@ -19,7 +19,7 @@ public class AuthorizationController {
     private final AuthService authenticationService;
 
     @PostMapping("/create-user")
-    public ResponseEntity<Response<JwtAuthenticationResponse>> registration(@RequestBody UserDto dto) {
+    public ResponseEntity<Response<JwtAuthenticationResponse>> registration(@RequestBody final UserDto dto) {
         return ResponseEntity.ok(new Response<>(authenticationService.signUp(dto)));
     }
 
@@ -44,14 +44,8 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public Response<JwtAuthenticationResponse> login(@RequestBody UserDto dto) {
+    public Response<JwtAuthenticationResponse> login(@RequestBody final UserDto dto) {
         return new Response<>(authenticationService.signIn(dto));
     }
 
-    private void methodForIdiot(){
-        if(1==1){
-            System.out.println(2==2);
-        }
-        return;
-    }
 }

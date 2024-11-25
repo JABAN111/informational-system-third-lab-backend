@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @AllArgsConstructor
 public class PersonController {
-    private PersonService personService;
+    private final PersonService personService;
 
     @GetMapping("/persons-names")
     public ResponseEntity<Response<Page<Person>>> getAllPersonsName(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") final int page,
+            @RequestParam(defaultValue = "10") final int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Person> personPage = personService.getAllPersons(pageable);
         return ResponseEntity.ok(new Response<>(personPage));
@@ -32,25 +32,24 @@ public class PersonController {
 
 
     @PostMapping("/create-person")
-    public ResponseEntity<Response<Person>> createPerson(@RequestBody PersonDto dto) {
+    public ResponseEntity<Response<Person>> createPerson(@RequestBody final PersonDto dto) {
+
         Person person = PersonMapper.toEntity(dto);
         personService.createPerson(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new Response<>("Пользователь успешно создан", person)
         );
-//        return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
     @PostMapping("/update-person")
-    public ResponseEntity<Response<Person>> updatePerson(@RequestBody PersonDto dto) {
+    public ResponseEntity<Response<Person>> updatePerson(@RequestBody final PersonDto dto) {
         Person person = PersonMapper.toEntity(dto);
         var updatedPerson = personService.updatePerson(person);
-        return ResponseEntity.ok(new Response<>("Данные о человеке: " + dto.getName() + " успешно обновлены"
-                , updatedPerson));
+        return ResponseEntity.ok(new Response<>("Данные о человеке: " + dto.getName() + " успешно обновлены", updatedPerson));
     }
 
     @DeleteMapping("delete-person-by-id/{id}")
-    public ResponseEntity<Response<String>> deletePersonById(@PathVariable Long id) {
+    public ResponseEntity<Response<String>> deletePersonById(@PathVariable final Long id) {
         log.info("Deleting person by id: {}", id);
         personService.deletePersonById(id);
 

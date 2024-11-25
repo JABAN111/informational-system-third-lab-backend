@@ -20,7 +20,7 @@ public class AuthenticationUtils {
      *
      * @throws NotEnoughRights в случае, если пользователь не имеет достаточное количество прав и не является админом
      */
-    public void verifyAccess(CreatorAware creatorAware) {
+    public void verifyAccess(final CreatorAware creatorAware) {
         var user = getCurrentUserFromContext();
 
         if (Objects.isNull(user.getRole())) {
@@ -28,18 +28,17 @@ public class AuthenticationUtils {
             throw new RuntimeException("Ошибка сервера");
         }
 
-        if(creatorAware.getCreator().getUsername().equals(user.getUsername())){
+        if (creatorAware.getCreator().getUsername().equals(user.getUsername())) {
             return;
         }
 
-        if(user.getRole() != UserRole.ROLE_ADMIN) {
+        if (user.getRole() != UserRole.ROLE_ADMIN) {
             throw new NotEnoughRights("Только создатель или админ может удалять/редактировать объекты");
         }
-        return;
     }
 
-    public User getCurrentUserFromContext(){
-        var user =  (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public User getCurrentUserFromContext() {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (Objects.nonNull(user)) {
             return user;

@@ -1,13 +1,9 @@
 package is.fistlab.controllers;
 
 import is.fistlab.database.entities.*;
-import is.fistlab.database.enums.Color;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
-import is.fistlab.dto.PersonDto;
 import is.fistlab.dto.StudyGroupDto;
-import is.fistlab.dto.UserDto;
-import is.fistlab.security.sevices.Impl.AuthServiceImpl;
 import is.fistlab.services.StudyGroupService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,35 +26,37 @@ import java.util.concurrent.ForkJoinPool;
 @AllArgsConstructor
 public class StudyGroupController {
     private final StudyGroupService studyGroupService;
-    private final AuthServiceImpl authServiceImpl;
 
     @PostMapping("/create-new-group")
-    public ResponseEntity<Response<StudyGroup>> createStudyGroup(@RequestBody StudyGroupDto dto) {
+    public ResponseEntity<Response<StudyGroup>> createStudyGroup(@RequestBody final StudyGroupDto dto) {
         return ResponseEntity.ok(new Response<>("Группа с названием: " + dto.getName() + " успешно создана", studyGroupService.add(dto)));
     }
 
     @GetMapping("/get-all-groups")
     public ResponseEntity<Response<Page<StudyGroup>>> getAllStudyGroups(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortDirection
+            @RequestParam(defaultValue = "0") final int page,
+            @RequestParam(defaultValue = "10") final int size,
+            @RequestParam(required = false) final String sortBy,
+            @RequestParam(required = false) final String sortDirection
     ) {
-
-        var pageable = studyGroupService.getPageAfterSort(page, size, sortBy, sortDirection);
+        var pageable = studyGroupService.getPageAfterSort(
+                page,
+                size,
+                sortBy,
+                sortDirection);
         Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
 
         return ResponseEntity.ok(new Response<>(studyGroupPage));
     }
 
     @DeleteMapping("/delete-group-by-id/{id}")
-    public ResponseEntity<Response<String>> deleteStudyGroupById(@PathVariable Long id) {
+    public ResponseEntity<Response<String>> deleteStudyGroupById(@PathVariable final Long id) {
         studyGroupService.deleteStudyGroup(id);
         return ResponseEntity.ok(new Response<>("Группа с id: " + id + " успешна удалена"));
     }
 
     @PatchMapping("/update-group-by-id/{id}")
-    public ResponseEntity<Response<StudyGroup>> updateStudyGroupById(@PathVariable Long id, @RequestBody StudyGroupDto dto) {
+    public ResponseEntity<Response<StudyGroup>> updateStudyGroupById(@PathVariable final Long id, @RequestBody final StudyGroupDto dto) {
         return ResponseEntity.ok(
                 new Response<>(
                         "Группа с названием " + dto.getName() + " успешно обновлена",
@@ -76,7 +74,7 @@ public class StudyGroupController {
 
     @DeleteMapping("/delete/by-group-admin/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Response<String>> deleteStudyGroupAdmin(@PathVariable String name) {
+    public ResponseEntity<Response<String>> deleteStudyGroupAdmin(@PathVariable final String name) {
         studyGroupService.deleteByGroupAdminName(name);
         return ResponseEntity.ok(new Response<>(
                 "Группа, с админом: \"" + name + "\" удалена успешно"
@@ -96,7 +94,7 @@ public class StudyGroupController {
     }
 
     @PatchMapping("/update-admin")
-    public ResponseEntity<Response<String>> updateAdmin(@RequestParam Long groupId, @RequestParam Long adminId) {
+    public ResponseEntity<Response<String>> updateAdmin(@RequestParam final Long groupId, @RequestParam final Long adminId) {
         studyGroupService.updateAdminGroup(groupId, adminId);
         return ResponseEntity.ok(
                 new Response<>("Обновлен админ группы с ид: " + groupId)
@@ -106,10 +104,12 @@ public class StudyGroupController {
 
     @GetMapping("/updates")
     public DeferredResult<ResponseEntity<Page<StudyGroup>>> getStudyGroupUpdates(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "0") final int page,
+            @RequestParam(defaultValue = "10") final int size
     ) {
-        DeferredResult<ResponseEntity<Page<StudyGroup>>> deferredResult = new DeferredResult<>(10_000L);//10 sec
+
+        final Long tenSeconds = 10_000L;
+        DeferredResult<ResponseEntity<Page<StudyGroup>>> deferredResult = new DeferredResult<>(tenSeconds);
 
         ForkJoinPool.commonPool().submit(() -> {
             try {
@@ -138,21 +138,20 @@ public class StudyGroupController {
 
     @GetMapping("/filter")
     public ResponseEntity<Response<Page<StudyGroup>>> getFilteredStudyGroups(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Long studentsCount,
-            @RequestParam(required = false) FormOfEducation formOfEducation,
-            @RequestParam(required = false) Semester semester,
-            @RequestParam(required = false) LocalDate createdAfter,
-            @RequestParam(required = false) Long shouldBeExpelled,
-            @RequestParam(required = false) Float averageMark,
-            @RequestParam(required = false) Long expelledStudents,
-            @RequestParam(required = false) Integer transferredStudents,
-            @RequestParam(required = false) Person admin,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(required = false) final String name,
+            @RequestParam(required = false) final Long studentsCount,
+            @RequestParam(required = false) final FormOfEducation formOfEducation,
+            @RequestParam(required = false) final Semester semester,
+            @RequestParam(required = false) final LocalDate createdAfter,
+            @RequestParam(required = false) final Long shouldBeExpelled,
+            @RequestParam(required = false) final Float averageMark,
+            @RequestParam(required = false) final Long expelledStudents,
+            @RequestParam(required = false) final Integer transferredStudents,
+            @RequestParam(required = false) final Person admin,
+            @RequestParam(defaultValue = "0") final int page,
+            @RequestParam(defaultValue = "10") final int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        // Вызов метода сервиса с фильтрацией
         List<StudyGroup> studyGroups = studyGroupService.filterStudyGroups(
                 name, studentsCount,
                 formOfEducation, semester,
