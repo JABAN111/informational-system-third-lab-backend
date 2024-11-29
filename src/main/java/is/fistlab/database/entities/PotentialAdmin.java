@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Entity
 @Data
+
 public class PotentialAdmin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

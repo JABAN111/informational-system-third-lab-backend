@@ -1,6 +1,5 @@
 package is.fistlab.database.entities;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

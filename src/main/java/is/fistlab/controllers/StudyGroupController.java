@@ -13,12 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
 
 @Slf4j
 @RequestMapping("/api/v1/manage/study-groups")
@@ -37,15 +35,14 @@ public class StudyGroupController {
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "10") final int size,
             @RequestParam(required = false) final String sortBy,
-            @RequestParam(required = false) final String sortDirection
-    ) {
+            @RequestParam(required = false) final String sortDirection) {
         var pageable = studyGroupService.getPageAfterSort(
                 page,
                 size,
                 sortBy,
                 sortDirection);
-        Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
 
+        Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
         return ResponseEntity.ok(new Response<>(studyGroupPage));
     }
 
@@ -64,7 +61,7 @@ public class StudyGroupController {
     }
 
     @GetMapping("/count/education-form")
-    public ResponseEntity<Response<List<Map<String, Object>>>> countEducationForm() {
+    public ResponseEntity<Response<List<Map<String, Long>>>> countEducationForm() {
         return ResponseEntity.ok(
                 new Response<>("",
                         studyGroupService.getCountFormsOfEducations()
@@ -103,38 +100,12 @@ public class StudyGroupController {
 
 
     @GetMapping("/updates")
-    public DeferredResult<ResponseEntity<Page<StudyGroup>>> getStudyGroupUpdates(
+    public Page<StudyGroup> getStudyGroupUpdates(
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "10") final int size
     ) {
-
-        final Long tenSeconds = 10_000L;
-        DeferredResult<ResponseEntity<Page<StudyGroup>>> deferredResult = new DeferredResult<>(tenSeconds);
-
-        ForkJoinPool.commonPool().submit(() -> {
-            try {
-                Pageable pageable = PageRequest.of(page, size);
-                Page<StudyGroup> studyGroupPage = studyGroupService.getAllStudyGroups(pageable);
-
-                deferredResult.setResult(ResponseEntity.ok(studyGroupPage));
-            } catch (Exception e) {
-                log.error("Error while processing updates: {}", e.getMessage(), e);
-                deferredResult.setErrorResult(
-                        ResponseEntity.status(500).body("Ошибка при получении данных: " + e.getMessage())
-                );
-            }
-        });
-
-        deferredResult.onTimeout(() -> {
-            log.warn("Request timed out");
-            deferredResult.setErrorResult(
-                    ResponseEntity.status(408).body("Запрос превысил тайм-аут ожидания")
-            );
-        });
-
-        return deferredResult;
+        return studyGroupService.getAllStudyGroups(PageRequest.of(page, size));
     }
-
 
     @GetMapping("/filter")
     public ResponseEntity<Response<Page<StudyGroup>>> getFilteredStudyGroups(

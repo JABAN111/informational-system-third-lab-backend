@@ -2,6 +2,7 @@ package is.fistlab.exceptions.exceptionHandlers;
 
 import is.fistlab.controllers.Response;
 import is.fistlab.exceptions.auth.NotEnoughRights;
+import is.fistlab.exceptions.auth.UserAlreadyExist;
 import is.fistlab.exceptions.dataBaseExceptions.person.InvalidActionException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotUnique;
@@ -36,4 +37,11 @@ public class PersonExceptionHandler {
     public Response<String> notEnoughRights(final NotEnoughRights exc) {
         return new Response<>(exc.getMessage());
     }
+
+    @ExceptionHandler(UserAlreadyExist.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Response<String> userAlreadyExist(final UserAlreadyExist exc) {
+        return new Response<>(exc.getMessage());
+    }
+
 }

@@ -19,7 +19,6 @@ public class StudyGroupMapper {
     private static final float MAX_AVERAGE_MARK = 5f;
 
     public static StudyGroup toEntity(final StudyGroupDto dto) {
-        log.info("получена dto {}", dto);
         assert dto != null : "StudyGroupDto cannot be null";
 
         StudyGroup studyGroup = new StudyGroup();

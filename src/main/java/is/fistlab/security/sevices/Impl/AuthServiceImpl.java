@@ -4,6 +4,7 @@ import is.fistlab.database.entities.User;
 import is.fistlab.database.enums.UserRole;
 import is.fistlab.dto.JwtAuthenticationResponse;
 import is.fistlab.dto.UserDto;
+import is.fistlab.exceptions.auth.UserAlreadyExist;
 import is.fistlab.security.sevices.AuthService;
 import is.fistlab.security.sevices.JwtService;
 import is.fistlab.services.AdminProcessingService;
@@ -34,6 +35,10 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .role(UserRole.ROLE_USER)
                 .build();
+
+        if (userService.isUserExists(user.getUsername())) {
+            throw new UserAlreadyExist("Пользователь с таким ником уже существует");
+        }
 
         var savedUser = userService.createNewUser(user);
 

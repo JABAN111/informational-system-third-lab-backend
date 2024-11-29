@@ -3,6 +3,7 @@ package is.fistlab.services.impl;
 import is.fistlab.database.entities.*;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
+import is.fistlab.database.repositories.CoordinatesRepository;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.database.repositories.specifications.StudyGroupSpecifications;
 import is.fistlab.dto.StudyGroupDto;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -32,14 +30,22 @@ public class StudyGroupServiceImpl implements StudyGroupService {
 
     private final StudyGroupRepository studyGroupRepository;
     private final AuthenticationUtils authenticationUtils;
+    private final CoordinatesRepository coordinatesRepository;
 
     @Override
     public StudyGroup add(final StudyGroupDto dto) {
         StudyGroup studyGroupToSave = StudyGroupMapper.toEntity(dto);
+        var groupToUpdate = studyGroupRepository.getReferenceById(studyGroupToSave.getId());
+
         if (Objects.nonNull(studyGroupToSave.getId()) && studyGroupRepository.existsById(studyGroupToSave.getId())) {
             log.warn("Study group with id {} already exists", studyGroupToSave.getId());
             throw new StudyGroupAlreadyExistException("Study group with id " + studyGroupToSave.getId() + " already exists");
         }
+        var oldCoordinates = coordinatesRepository.getReferenceById(groupToUpdate.getCoordinates().getId());
+        var newCoordinates = studyGroupToSave.getCoordinates();
+        newCoordinates.setId(oldCoordinates.getId());
+        coordinatesRepository.save(newCoordinates);
+        studyGroupToSave.setCoordinates(newCoordinates);
         studyGroupToSave.setCreator(authenticationUtils.getCurrentUserFromContext());
         var savedStudyGroup = studyGroupRepository.save(studyGroupToSave);
         log.info("Study group created: {}", studyGroupToSave);
@@ -48,7 +54,9 @@ public class StudyGroupServiceImpl implements StudyGroupService {
 
     @Override
     public Page<StudyGroup> getAllStudyGroups(final Pageable pageable) {
-        return studyGroupRepository.findAll(pageable);
+        var data = studyGroupRepository.findAll(pageable);
+        log.info("All study groups found: {}", data);
+        return data;
     }
 
     @Override
@@ -90,13 +98,28 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     }
 
     @Override
-    public List<Map<String, Object>> getCountFormsOfEducations() {
-        return studyGroupRepository.getCountFormsOfEducations();
+    public List<Map<String, Long>> getCountFormsOfEducations() {
+        List<Object[]> data = studyGroupRepository.getCountFormsOfEducations();
+
+        List<Map<String, Long>> toReturn = new ArrayList<>();
+
+        for (Object[] row : data) {
+            Map<String, Long> toReturnRow = new HashMap<>();
+
+            String columnName = row[0].toString();
+            Long value = (Long) row[1];
+
+            toReturnRow.put(columnName, value);
+
+            toReturn.add(toReturnRow);
+        }
+//
+        return toReturn;
     }
 
     @Override
     public void updateAdminGroup(final Long groupId, final Long adminId) {
-        studyGroupRepository.updateGroupAdmin(groupId, adminId);
+         studyGroupRepository.updateGroupAdmin(groupId, adminId);
     }
 
     @Override

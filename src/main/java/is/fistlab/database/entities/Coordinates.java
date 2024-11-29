@@ -15,7 +15,7 @@ import javax.validation.constraints.Max;
 public class Coordinates {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     @Max(112)
     private Float x;
     private Float y;

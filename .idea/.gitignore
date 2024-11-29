@@ -5,7 +5,6 @@
 /httpRequests/
 # Datasource local storage ignored files
 /dataSources/
-/dataSources.local.xml
-../target
-target/
+../target/
 .idea/
+../.vscode

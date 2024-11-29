@@ -21,7 +21,7 @@ public interface StudyGroupService {
 
     void deleteStudyGroup(Long id);
 
-    List<Map<String, Object>> getCountFormsOfEducations();
+    List<Map<String, Long>> getCountFormsOfEducations();
 
     void updateAdminGroup(Long groupId, Long adminId);
 

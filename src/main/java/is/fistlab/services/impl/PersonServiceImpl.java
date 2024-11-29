@@ -1,6 +1,8 @@
 package is.fistlab.services.impl;
 
+import is.fistlab.database.entities.Location;
 import is.fistlab.database.entities.Person;
+import is.fistlab.database.repositories.LocationRepository;
 import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.exceptions.dataBaseExceptions.person.PersonNotExistException;
@@ -24,6 +26,7 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
     private final AuthenticationUtils authenticationUtils;
     private final StudyGroupRepository studyGroupRepository;
+    private final LocationRepository locationRepository;
 
     @Override
     public void createPerson(final Person person) {
@@ -64,9 +67,16 @@ public class PersonServiceImpl implements PersonService {
         }
         Person personToUpdate = personRepository.getReferenceById(person.getId());
         authenticationUtils.verifyAccess(personToUpdate);
+
+        var location = locationRepository.getReferenceById(personToUpdate.getId());
+        Location locationFromPersonToUpdate = person.getLocation();
+        locationFromPersonToUpdate.setId(location.getId());
+        personToUpdate.setLocation(locationRepository.save(locationFromPersonToUpdate));
+
         person.setCreator(personToUpdate.getCreator());
         var updatedPerson = personRepository.save(person);
         log.info("Updated person: {}", updatedPerson);
+
         return person;
     }
 
