@@ -6,4 +6,4 @@ WORKDIR /app
 
 COPY target/ .
 
-CMD ["java", "-jar", "FistLab-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "FistLab-1.0.0.jar"]

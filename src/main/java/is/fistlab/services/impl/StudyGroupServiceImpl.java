@@ -35,17 +35,11 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Override
     public StudyGroup add(final StudyGroupDto dto) {
         StudyGroup studyGroupToSave = StudyGroupMapper.toEntity(dto);
-        var groupToUpdate = studyGroupRepository.getReferenceById(studyGroupToSave.getId());
 
         if (Objects.nonNull(studyGroupToSave.getId()) && studyGroupRepository.existsById(studyGroupToSave.getId())) {
             log.warn("Study group with id {} already exists", studyGroupToSave.getId());
             throw new StudyGroupAlreadyExistException("Study group with id " + studyGroupToSave.getId() + " already exists");
         }
-        var oldCoordinates = coordinatesRepository.getReferenceById(groupToUpdate.getCoordinates().getId());
-        var newCoordinates = studyGroupToSave.getCoordinates();
-        newCoordinates.setId(oldCoordinates.getId());
-        coordinatesRepository.save(newCoordinates);
-        studyGroupToSave.setCoordinates(newCoordinates);
         studyGroupToSave.setCreator(authenticationUtils.getCurrentUserFromContext());
         var savedStudyGroup = studyGroupRepository.save(studyGroupToSave);
         log.info("Study group created: {}", studyGroupToSave);
@@ -70,9 +64,17 @@ public class StudyGroupServiceImpl implements StudyGroupService {
 
         var newStudyGroup = StudyGroupMapper.toEntity(dto);
         newStudyGroup.setId(id);
+
         StudyGroup savedStudyGroup;
-        authenticationUtils.verifyAccess(optionalStudyGroup.get());
+        var groupToUpdate = optionalStudyGroup.get();
+        authenticationUtils.verifyAccess(groupToUpdate);
         newStudyGroup.setCreator(authenticationUtils.getCurrentUserFromContext());
+
+        var oldCoordinates = coordinatesRepository.getReferenceById(groupToUpdate.getCoordinates().getId());
+        var newCoordinates = newStudyGroup.getCoordinates();
+        newCoordinates.setId(oldCoordinates.getId());
+        coordinatesRepository.save(newCoordinates);
+        newStudyGroup.setCoordinates(newCoordinates);
         savedStudyGroup = studyGroupRepository.save(newStudyGroup);
 
         log.info("Study group updated: {}", savedStudyGroup);

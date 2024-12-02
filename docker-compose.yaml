@@ -12,12 +12,13 @@ services:
     ports:
       - "5432:5432"
 
-#  app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - postgres
-#docker compose down -v && docker compose build && docker compose up
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+#mvn clean install && docker compose down -v && docker compose build && docker compose up

@@ -62,6 +62,25 @@ public class StudyGroupMapper {
         }
         studyGroup.setShouldBeExpelled(dto.getShouldBeExpelled());
 
+        if (dto.getStudentsCount() <= 0) {
+            log.warn("Students count must be greater than 0");
+            throw new InvalidFieldException("Число студентов должно быть больше 0");
+        }
+
+        if (dto.getExpelledStudents() <= 0) {
+            log.warn("Expelled students count must be greater than 0");
+            throw new InvalidFieldException("Число отчисленных студентов должно быть больше 0");
+        }
+
+        if (dto.getTransferredStudents() <= 0) {
+            log.warn("Transferred students count must be greater than 0");
+            throw new InvalidFieldException("Число переведенных студентов должно быть больше 0");
+        }
+        if (dto.getShouldBeExpelled() <= 0) {
+            log.warn("Should be expelled must be greater than 0");
+            throw new InvalidFieldException("Число студентов к отчислению должно быть больше 0");
+        }
+
         if (dto.getAverageMark() <= 0) {
             log.warn("Average mark must be greater than 0");
             throw new InvalidFieldException("Средняя оценка должна быть больше 0");
@@ -73,6 +92,7 @@ public class StudyGroupMapper {
         }
 
         studyGroup.setAverageMark(dto.getAverageMark());
+
 
         try {
             studyGroup.setSemesterEnum(Semester.valueOf(dto.getSemesterEnum()));

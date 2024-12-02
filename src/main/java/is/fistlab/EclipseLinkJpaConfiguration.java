@@ -65,7 +65,7 @@ public class EclipseLinkJpaConfiguration extends JpaBaseConfiguration {
     public static DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/first");
+        dataSource.setUrl("jdbc:postgresql://postgres:5432/first");
         dataSource.setUsername("user");
         dataSource.setPassword("user");
         return dataSource;

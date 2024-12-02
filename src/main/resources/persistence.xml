@@ -10,6 +10,10 @@
         <class>is.fistlab.database.entities.PotentialAdmin</class>
         <class>is.fistlab.database.entities.StudyGroup</class>
         <class>is.fistlab.database.entities.User</class>
-
+        <properties>
+            <property name="eclipselink.persistence-validation" value="true"/>
+            <property name="javax.persistence.validation.mode" value="AUTO"/>
+        </properties>
     </persistence-unit>
+
 </persistence>
