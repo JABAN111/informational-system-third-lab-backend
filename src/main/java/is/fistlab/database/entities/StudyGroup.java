@@ -61,7 +61,7 @@ public class StudyGroup implements CreatorAware {
     @Column(nullable = false, name = "semester_enum") // Преобразование в snake_case
     private Semester semesterEnum; // Поле может быть null
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "group_admin_id") // Преобразование в snake_case
     private Person groupAdmin; // Поле не может быть null
 
