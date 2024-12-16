@@ -23,5 +23,5 @@ public class PersonDto {
     //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример Ису ид)
     //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
     private String passportID;
-    private UserDto creatorDto;
+    private UserDto creator;
 }

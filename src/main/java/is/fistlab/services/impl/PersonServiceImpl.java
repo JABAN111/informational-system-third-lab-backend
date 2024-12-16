@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -41,17 +42,25 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public void deletePersonById(final Long id) {
-        Optional<Person> deletingPerson = personRepository.findById(id);
+    @Transactional
+    public List<Person> saveAllPersons(List<Person> persons) {
+        var savedList = personRepository.saveAll(persons);
+        log.info("Saved {} persons", savedList.size());
+        return savedList;
+    }
+
+    @Override
+    public void deletePersonByPassportId(final String passportId) {
+        Optional<Person> deletingPerson = personRepository.findByPassportID(passportId);
 
         if (deletingPerson.isEmpty()) {
-            log.error("Person with id: {} does not exist", id);
+            log.error("Person with id: {} does not exist", passportId);
             throw new PersonNotExistException("Пользователя с таким id не существует");
         }
 
         authenticationUtils.verifyAccess(deletingPerson.get());
-        studyGroupRepository.deleteByAdminId(id);
-        log.info("Deleted person: {}", id);
+        studyGroupRepository.deleteByAdminId(passportId);
+        log.info("Deleted person: {}", passportId);
     }
 
     @Override
@@ -61,14 +70,14 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person updatePerson(final Person person) {
-        if (!personRepository.existsById(person.getId())) {
-            log.error("Person with id: {} does not exist, update is impossible", person.getId());
+        if(personRepository.findPersonByPassportID(person.getPassportID()).isEmpty()) {
+            log.error("Person with id: {} does not exist, update is impossible", person.getPassportID());
             throw new PersonNotExistException("Пользователь не найден");
         }
-        Person personToUpdate = personRepository.getReferenceById(person.getId());
+        Person personToUpdate = personRepository.findPersonByPassportID(person.getPassportID()).get();
         authenticationUtils.verifyAccess(personToUpdate);
 
-        var location = locationRepository.getReferenceById(personToUpdate.getId());
+        var location = locationRepository.getReferenceById(personToUpdate.getLocation().getId());
         Location locationFromPersonToUpdate = person.getLocation();
         locationFromPersonToUpdate.setId(location.getId());
         personToUpdate.setLocation(locationRepository.save(locationFromPersonToUpdate));

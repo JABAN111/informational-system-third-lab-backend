@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
     Optional<Person> findPersonByPassportID(String passportID);
-
+    Optional<Person> findByPassportID(String passportID);
     @NonNull
     Page<Person> findAll(@NonNull Pageable pageable);
 }

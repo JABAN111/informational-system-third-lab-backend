@@ -21,9 +21,6 @@ public class PersonMapper {
 
         Person person = new Person();
 
-        if (Objects.nonNull(dto.getId())) {
-            person.setId(dto.getId());
-        }
 
         if (Utils.isEmptyOrNull(dto.getName())) {
             log.warn("Name cannot be empty");
@@ -94,11 +91,10 @@ public class PersonMapper {
             throw new InvalidFieldException("Паспорт ID должен быть не более 255 символов в длину");
         }
 
-
         person.setPassportID(dto.getPassportID());
 
-        if (Objects.nonNull(dto.getCreatorDto())) {
-            person.setCreator(UserMapper.toEntity(dto.getCreatorDto()));
+        if (Objects.nonNull(dto.getCreator())) {
+            person.setCreator(UserMapper.toEntity(dto.getCreator()));
         }
 
         return person;

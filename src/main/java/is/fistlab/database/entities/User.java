@@ -19,11 +19,9 @@ import java.util.List;
 @ToString
 @Table(name = "app_user")
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, unique = true)
+    @Id
     private String username;
 
     @Column(nullable = false)

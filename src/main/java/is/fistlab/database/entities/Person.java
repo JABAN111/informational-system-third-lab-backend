@@ -19,8 +19,9 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class Person implements CreatorAware {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, unique = true)
+    @Size(min = 10)
+    private String passportID;
     @Column(nullable = false)
     @Size(min = 1)
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -28,7 +29,7 @@ public class Person implements CreatorAware {
     private Color eyeColor; //Поле может быть null
     @Enumerated(EnumType.STRING)
     private Color hairColor; //Поле может быть null
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false, referencedColumnName = "id")
     private Location location; //Поле не может быть null
     @Min(1)
@@ -38,11 +39,7 @@ public class Person implements CreatorAware {
     @Column
     @Enumerated(EnumType.STRING)
     private Country nationality; //Поле не может быть null
-    @Column(nullable = false, unique = true)
-    @Size(min = 10)
-    //предполагается, что пользователь вводит свое значение, выданное ему в жизни(пример Ису ид)
-    //Значение этого поля должно быть уникальным, Длина строки должна быть не меньше 10, Поле не может быть null
-    private String passportID;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private User creator;

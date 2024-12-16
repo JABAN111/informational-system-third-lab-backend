@@ -48,9 +48,9 @@ public class PersonController {
         return ResponseEntity.ok(new Response<>("Данные о человеке: " + dto.getName() + " успешно обновлены", updatedPerson));
     }
 
-    @DeleteMapping("delete-person-by-id/{id}")
-    public ResponseEntity<Response<String>> deletePersonById(@PathVariable final Long id) {
-        personService.deletePersonById(id);
-        return ResponseEntity.ok(new Response<>("Пользователь с id: " + id + " успешно удален"));
+    @DeleteMapping("delete-person-by-id/{passportId}")
+    public ResponseEntity<Response<String>> deletePersonById(@PathVariable final String passportId) {
+        personService.deletePersonByPassportId(passportId);
+        return ResponseEntity.ok(new Response<>("Пользователь с id: " + passportId + " успешно удален"));
     }
 }

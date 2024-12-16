@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User updateUser(final User user) {
-        userRepository.getReferenceById(user.getId());
         User newUser = userRepository.save(user);
         log.info("{} updated successfully", user.getUsername());
         return newUser;

@@ -19,10 +19,6 @@ public class UserMapper {
             log.warn("Username is null");
             throw new InvalidFieldException("Username is required");
         }
-        if (Objects.isNull(dto.getPassword())) {
-            log.warn("Password is null");
-            throw new InvalidFieldException("Password is required");
-        }
         if (Objects.isNull(dto.getRole())) {
             log.warn("Role is null");
             throw new InvalidFieldException("Role is required");
