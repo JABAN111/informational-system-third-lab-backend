@@ -25,7 +25,8 @@ public enum FieldsHelper {
     PERSON_HEIGHT(18),
     PERSON_WEIGHT(19),
     PERSON_NATIONALITY(20),
-    PASSPORT_ID(21);
+    PASSPORT_ID(21),
+    IMPORT_TIME_STAMP(22);
 
     private final int index;
 

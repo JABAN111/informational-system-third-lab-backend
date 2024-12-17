@@ -89,7 +89,7 @@ $$ LANGUAGE plpgsql;
 
 
 --    не в рамках доп заданий
-CREATE OR REPLACE FUNCTION delete_admin_and_groups(admin_id bigint)
+CREATE OR REPLACE FUNCTION delete_admin_and_groups(admin_id varchar)
     RETURNS void AS
 $$
 BEGIN
@@ -97,7 +97,7 @@ DELETE FROM study_group
 WHERE group_admin_id = admin_id;
 
 DELETE FROM person
-WHERE id = admin_id;
+WHERE passportID = admin_id;
 
 END;
 $$ LANGUAGE plpgsql;

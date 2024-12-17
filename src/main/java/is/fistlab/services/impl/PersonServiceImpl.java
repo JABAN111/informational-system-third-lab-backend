@@ -30,15 +30,16 @@ public class PersonServiceImpl implements PersonService {
     private final LocationRepository locationRepository;
 
     @Override
-    public void createPerson(final Person person) {
+    public Person createPerson(final Person person) {
         if (personRepository.findPersonByPassportID(person.getPassportID()).isPresent()) {
             log.warn("Person with passportID: {} already exist", person.getPassportID());
             throw new PersonNotUnique("Паспорт пользователя должен быть уникальным");
         }
-        var creator = authenticationUtils.getCurrentUserFromContext();
-        person.setCreator(creator);
-        personRepository.save(person);
+//        todo временно выключено
+//        var creator = authenticationUtils.getCurrentUserFromContext();
+//        person.setCreator(creator);
         log.info("Created person: {}", person);
+        return personRepository.save(person);
     }
 
     @Override

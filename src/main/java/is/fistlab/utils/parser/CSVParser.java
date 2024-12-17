@@ -9,11 +9,12 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
 public class CSVParser {
-    private static final String[] HEADERS = {"name","coordinate_x","coordinate_y","creation_date","student_count","expelledStudents","transferredStudents","formOfEducation","shouldNeExpelled","averageMark","semesterEnum","personName","personEyeColor","personHairColor","personLocationX","personLocationY","personLocationZ","locationName","personHeight","personWeight","personNationality","passportID"};
+    private static final String[] HEADERS = {"name","coordinate_x","coordinate_y","creation_date","student_count","expelledStudents","transferredStudents","formOfEducation","shouldNeExpelled","averageMark","semesterEnum","personName","personEyeColor","personHairColor","personLocationX","personLocationY","personLocationZ","locationName","personHeight","personWeight","personNationality","passportID", "importTimeStamp"};
 
     public static ArrayList<StudyGroupDto> getStudyGroupsFromFile(final File file) {
         final ArrayList<StudyGroupDto> list = new ArrayList<>();
@@ -28,8 +29,6 @@ public class CSVParser {
 
             for (CSVRecord record : records) {
                 var sg = parseStudyGroup(record);
-//                var personDto = parsePerson(record);
-
                 list.add(sg);
             }
 
@@ -92,6 +91,9 @@ public class CSVParser {
                 ))
         );
 
+        studyGroupDto.setImportTimeStamp(
+                 Timestamp.valueOf(getRecordValue(record, IMPORT_TIME_STAMP.getIndex()))
+        );
         studyGroupDto.setGroupAdmin(
                 groupAdmin
         );

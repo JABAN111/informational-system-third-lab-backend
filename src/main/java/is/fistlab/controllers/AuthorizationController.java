@@ -3,7 +3,7 @@ package is.fistlab.controllers;
 import is.fistlab.database.enums.UserRole;
 import is.fistlab.dto.JwtAuthenticationResponse;
 import is.fistlab.dto.UserDto;
-import is.fistlab.security.sevices.AuthService;
+import is.fistlab.services.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,17 @@ import org.springframework.web.bind.annotation.*;
 public class AuthorizationController {
 
     private final AuthService authenticationService;
+
+    @GetMapping("/hello_world")
+    public ResponseEntity<String> helloWorld() {
+        return ResponseEntity.ok("Hello World!");
+    }
+
+    @GetMapping("/hello_private")
+    @PreAuthorize("hasRole('User')")
+    public ResponseEntity<String> helloPrivate() {
+        return ResponseEntity.ok("Hello Private!");
+    }
 
     @PostMapping("/create-user")
     public ResponseEntity<Response<JwtAuthenticationResponse>> registration(@RequestBody final UserDto dto) {

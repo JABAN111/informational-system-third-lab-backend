@@ -1,7 +1,7 @@
-package is.fistlab.security;
+package is.fistlab.configurations.security;
 
 import is.fistlab.exceptions.auth.JwtTokenExpired;
-import is.fistlab.security.sevices.JwtService;
+import is.fistlab.services.JwtService;
 import is.fistlab.services.UserService;
 
 import jakarta.servlet.FilterChain;

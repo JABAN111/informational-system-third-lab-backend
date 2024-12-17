@@ -1,4 +1,4 @@
-package is.fistlab.security;
+package is.fistlab.configurations.security;
 
 import is.fistlab.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/all/**").permitAll()
                         .requestMatchers("/api/v1/manage/**").authenticated()
+                        .requestMatchers("/api/v1/import/**").authenticated()
                         .requestMatchers("/api/v1/admin/console/**").authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

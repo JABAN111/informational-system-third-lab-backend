@@ -1,4 +1,4 @@
-package is.fistlab.security.sevices;
+package is.fistlab.services;
 
 import is.fistlab.database.entities.User;
 import is.fistlab.database.enums.UserRole;

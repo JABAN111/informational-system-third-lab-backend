@@ -1,4 +1,4 @@
-package is.fistlab;
+package is.fistlab.configurations;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -65,7 +65,8 @@ public class EclipseLinkJpaConfiguration extends JpaBaseConfiguration {
     public static DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://postgres:5432/first");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/first");
+//        dataSource.setUrl("jdbc:postgresql://postgres:5432/first");
         dataSource.setUsername("user");
         dataSource.setPassword("user");
         return dataSource;
@@ -90,11 +91,37 @@ public class EclipseLinkJpaConfiguration extends JpaBaseConfiguration {
 
     private static Map<String, ?> initJpaProperties() {
         final Map<String, Object> ret = new HashMap<>();
-        ret.put(PersistenceUnitProperties.BATCH_WRITING, BatchWriting.JDBC);
-        ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.FINEST_LABEL);
+        ret.put(PersistenceUnitProperties.BATCH_WRITING, BatchWriting.JDBC); // Включаем batch writing
+        ret.put(PersistenceUnitProperties.BATCH_WRITING_SIZE, "50"); // Размер батча
+//        ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.FINEST_LABEL);
+//        ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.JPA);
+//        ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.OFF); // Полностью отключаем логирование
+
+        ret.put(PersistenceUnitProperties.PERSISTENCE_CONTEXT_COMMIT_ORDER, "Changes");
+//        ret.put(PersistenceUnitProperties.ORDER_UPDATES, "true"); // Упорядочиваем UPDATE
         ret.put(PersistenceUnitProperties.WEAVING, "false");
         ret.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.CREATE_ONLY);
         ret.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
         return ret;
     }
+//    private static Map<String, ?> initJpaProperties() {
+//        final Map<String, Object> ret = new HashMap<>();
+//        ret.put(PersistenceUnitProperties.BATCH_WRITING, BatchWriting.JDBC);
+////        ret.put(PersistenceUnitProperties.BATCH_WRITING_SIZE, "50"); // Размер батча
+//        ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.FINEST_LABEL);
+//        ret.put(PersistenceUnitProperties.WEAVING, "false");
+//        ret.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.CREATE_ONLY);
+//        ret.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
+//        return ret;
+//    }
+
+//    private static Map<String, ?> initJpaProperties() {
+//        final Map<String, Object> ret = new HashMap<>();
+//        ret.put(PersistenceUnitProperties.BATCH_WRITING, BatchWriting.JDBC);
+//        ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.FINEST_LABEL);
+//        ret.put(PersistenceUnitProperties.WEAVING, "false");
+//        ret.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.CREATE_ONLY);
+//        ret.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
+//        return ret;
+//    }
 }

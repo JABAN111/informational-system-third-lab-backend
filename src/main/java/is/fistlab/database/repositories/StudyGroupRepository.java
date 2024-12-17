@@ -30,5 +30,5 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long>, J
     Integer getCountOfExpelledStudents();
 
     @Query(value = "SELECT delete_admin_and_groups(?)", nativeQuery = true)
-    void deleteByAdminId(Long groupAdminId);
+    void deleteByAdminId(String groupAdminId);
 }

@@ -4,6 +4,7 @@ import is.fistlab.database.entities.Coordinates;
 
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 
@@ -39,5 +40,6 @@ public class StudyGroupDto {
 
     private PersonDto groupAdmin; //Поле не может быть null
 
+    private Timestamp importTimeStamp;
 }
 

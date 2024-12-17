@@ -14,7 +14,9 @@ import java.util.Map;
 
 public interface StudyGroupService {
     StudyGroup add(StudyGroupDto dto);
+    StudyGroup add(StudyGroup group);
 
+    List<StudyGroup> addAll(List<StudyGroup> studyGroupList);
     Page<StudyGroup> getAllStudyGroups(Pageable pageable);
 
     StudyGroup updateStudyGroup(Long id, StudyGroupDto dto);

@@ -1,9 +1,9 @@
-package is.fistlab.security.sevices.Impl;
+package is.fistlab.services.impl;
 
 import io.jsonwebtoken.JwtException;
 import is.fistlab.database.entities.User;
 import is.fistlab.exceptions.auth.JwtTokenExpired;
-import is.fistlab.security.sevices.JwtService;
+import is.fistlab.services.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -43,7 +43,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(final UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User customUserDetails) {
-            claims.put("id", customUserDetails.getId());
+//            claims.put("id", customUserDetails.getId());
             claims.put("username", customUserDetails.getUsername());
             claims.put("role", customUserDetails.getRole());
         }

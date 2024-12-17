@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Data
@@ -61,7 +62,7 @@ public class StudyGroup implements CreatorAware {
     @Column(nullable = false, name = "semester_enum") // Преобразование в snake_case
     private Semester semesterEnum; // Поле может быть null
 
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "group_admin_id") // Преобразование в snake_case
     private Person groupAdmin; // Поле не может быть null
 
@@ -75,6 +76,8 @@ public class StudyGroup implements CreatorAware {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_update_user_id")
     private User lastUpdate;
+
+    private Timestamp importTimeStamp;
 
     @PrePersist
     protected void onCreate() {

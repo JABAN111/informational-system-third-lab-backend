@@ -16,6 +16,7 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response<String> methodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
         log.error(e.getLocalizedMessage());
+        e.printStackTrace();
         return new Response<>("Невалидное значение фильтра", null);
     }
 }

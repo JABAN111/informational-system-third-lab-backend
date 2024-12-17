@@ -1,12 +1,12 @@
-package is.fistlab.security.sevices.Impl;
+package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.User;
 import is.fistlab.database.enums.UserRole;
 import is.fistlab.dto.JwtAuthenticationResponse;
 import is.fistlab.dto.UserDto;
 import is.fistlab.exceptions.auth.UserAlreadyExist;
-import is.fistlab.security.sevices.AuthService;
-import is.fistlab.security.sevices.JwtService;
+import is.fistlab.services.AuthService;
+import is.fistlab.services.JwtService;
 import is.fistlab.services.AdminProcessingService;
 import is.fistlab.services.UserService;
 import lombok.RequiredArgsConstructor;
