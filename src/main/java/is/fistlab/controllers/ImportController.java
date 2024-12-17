@@ -4,6 +4,10 @@ import is.fistlab.database.repositories.LocationRepository;
 import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.services.AsyncService;
+import is.fistlab.services.impl.AsyncServiceImpl;
+import is.fistlab.services.impl.AuthServiceImpl;
+import is.fistlab.services.impl.ssyncProcessing.AsyncProcessing;
+import is.fistlab.utils.AuthenticationUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
@@ -24,18 +28,19 @@ public class ImportController {
     private final StudyGroupRepository studyGroupRepository;
     private final LocationRepository locationRepository;
     private final PersonRepository personRepository;
+    private final AsyncProcessing asyncProcessing;
+    private final AuthServiceImpl authServiceImpl;
+    private final AsyncServiceImpl asyncServiceImpl;
 
     @PostMapping("/csv")
     public ResponseEntity<Response<Integer>> importStudyGroups(@RequestParam("file") MultipartFile file){
         try {
             String fileName = file.getOriginalFilename();
-            var result = importService.importStudyGroups(file.getInputStream());
-
-            return ResponseEntity.ok(
-                    new Response<>("Было сохранено " + result + "  объектов",
-                            result)
-            );
-
+            var fil = asyncServiceImpl.readFile(file.getInputStream());
+//            var result = importService.importStudyGroups(file.getInputStream());
+            asyncProcessing.processAsync(fil, authServiceImpl.getCurrentUser());
+            return ResponseEntity.ok(new Response<>("Сохранение начали"));
+//                            result)
         }catch (Exception e){
             log.error(e.getMessage());
             throw new NotImplementedException("csv");

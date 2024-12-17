@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 public interface AsyncService {
 
 
