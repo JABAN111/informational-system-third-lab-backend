@@ -36,15 +36,15 @@ public class PersonServiceImpl implements PersonService {
             throw new PersonNotUnique("Паспорт пользователя должен быть уникальным");
         }
 //        todo временно выключено
-//        var creator = authenticationUtils.getCurrentUserFromContext();
-//        person.setCreator(creator);
+        var creator = authenticationUtils.getCurrentUserFromContext();
+        person.setCreator(creator);
         log.info("Created person: {}", person);
         return personRepository.save(person);
     }
 
     @Override
     @Transactional
-    public List<Person> saveAllPersons(List<Person> persons) {
+    public List<Person> addAll(List<Person> persons) {
         var savedList = personRepository.saveAll(persons);
         log.info("Saved {} persons", savedList.size());
         return savedList;
