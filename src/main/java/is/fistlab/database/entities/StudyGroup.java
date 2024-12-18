@@ -77,7 +77,7 @@ public class StudyGroup implements CreatorAware {
     @JoinColumn(name = "last_update_user_id")
     private User lastUpdate;
 
-    private Timestamp importTimeStamp;
+//    private Timestamp importTimeStamp;
 
     @PrePersist
     protected void onCreate() {

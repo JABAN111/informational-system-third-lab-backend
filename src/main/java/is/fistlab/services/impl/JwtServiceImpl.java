@@ -88,7 +88,7 @@ public class JwtServiceImpl implements JwtService {
     private String generateToken(final Map<String, Object> extraClaims,
                                  final UserDetails userDetails) {
         final int minute = 60_000;
-        final int hour = minute * 60;
+        final int hour = minute * 360;
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())

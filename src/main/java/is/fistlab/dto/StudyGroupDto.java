@@ -40,6 +40,6 @@ public class StudyGroupDto {
 
     private PersonDto groupAdmin; //Поле не может быть null
 
-    private Timestamp importTimeStamp;
+//    private Timestamp importTimeStamp;
 }
 

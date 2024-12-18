@@ -91,9 +91,9 @@ public class CSVParser {
                 ))
         );
 
-        studyGroupDto.setImportTimeStamp(
-                 Timestamp.valueOf(getRecordValue(record, IMPORT_TIME_STAMP.getIndex()))
-        );
+//        studyGroupDto.setImportTimeStamp(
+//                 Timestamp.valueOf(getRecordValue(record, IMPORT_TIME_STAMP.getIndex()))
+//        );
         studyGroupDto.setGroupAdmin(
                 groupAdmin
         );

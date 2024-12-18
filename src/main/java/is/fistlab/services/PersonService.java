@@ -10,7 +10,7 @@ import java.util.List;
 public interface PersonService {
     Person updatePerson(Person person);
     Person createPerson(Person person);
-    List<Person> saveAllPersons(List<Person> persons);
+    List<Person> addAll(List<Person> persons);
     void deletePersonByPassportId(String passportId);
     Page<Person> getAllPersons(Pageable pageable);
 }
