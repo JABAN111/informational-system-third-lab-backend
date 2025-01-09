@@ -8,23 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-//
-//
-//import is.fistlab.database.entities.Location;
-//import is.fistlab.database.entities.StudyGroup;
-//import is.fistlab.database.entities.User;
-//import is.fistlab.database.repositories.*;
-//import is.fistlab.dto.UserDto;
-//import is.fistlab.mappers.UserMapper;
-////import is.fistlab.services.impl.ImportService;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//import java.io.*;
-//import java.util.ArrayList;
-//import java.util.List;
-//
+
 @SpringBootTest
 public class SpringTestBoot {
     @Autowired

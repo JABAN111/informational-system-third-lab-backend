@@ -4,7 +4,6 @@ import is.fistlab.database.entities.Coordinates;
 
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 

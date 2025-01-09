@@ -30,16 +30,16 @@ public class ImportProcessingImpl implements ImportProcessing {
 
     @Async
     @Override
-    public void runAsync(List<StudyGroupDto> studyGroupList, User user){
+    public void runAsync(List<StudyGroupDto> studyGroupList, User user) {
         runImport(studyGroupList, user, ImportMode.ASYNC);
     }
 
     @Override
-    public void runSeq(List<StudyGroupDto> studyGroupList, User user){
-        sequentialQueueProcessor.submitTask( () -> runImport(studyGroupList, user, ImportMode.SEQUENTIAL) );
+    public void runSeq(List<StudyGroupDto> studyGroupList, User user) {
+        sequentialQueueProcessor.submitTask(() -> runImport(studyGroupList, user, ImportMode.SEQUENTIAL));
     }
 
-    public void runImport(List<StudyGroupDto> studyGroupList, User user, ImportMode mode){
+    public void runImport(List<StudyGroupDto> studyGroupList, User user, ImportMode mode) {
         List<StudyGroup> sgList = new ArrayList<>(studyGroupList.size());
         List<Person> pList = new ArrayList<>(studyGroupList.size());
         List<Location> locationList = new ArrayList<>(studyGroupList.size());
@@ -65,7 +65,7 @@ public class ImportProcessingImpl implements ImportProcessing {
 
             if (mode == ImportMode.ASYNC)
                 coordinateService.addAll(coordinatesList);
-            if(mode == ImportMode.SEQUENTIAL){
+            if (mode == ImportMode.SEQUENTIAL) {
                 log.info("flag for sequential mode");
             }
             locationService.addAll(locationList);
@@ -78,7 +78,7 @@ public class ImportProcessingImpl implements ImportProcessing {
 
             log.info("import operation finished for thread: {}", Thread.currentThread().getName());
 
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             operation.setIsFinished(false);
             operationService.add(operation);
             log.error("Operation failed for thread: {}", Thread.currentThread().getName());
@@ -86,7 +86,7 @@ public class ImportProcessingImpl implements ImportProcessing {
         }
     }
 
-    public enum ImportMode{
+    public enum ImportMode {
         SEQUENTIAL,
         ASYNC
     }

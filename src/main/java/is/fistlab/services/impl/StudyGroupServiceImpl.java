@@ -26,7 +26,7 @@ import java.util.*;
 @Slf4j
 @Service
 @AllArgsConstructor
-//@Transactional
+@Transactional
 public class StudyGroupServiceImpl implements StudyGroupService {
 
     private final StudyGroupRepository studyGroupRepository;

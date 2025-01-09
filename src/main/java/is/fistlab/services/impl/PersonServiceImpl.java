@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-//@Transactional
+@Transactional
 @AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
@@ -30,7 +30,6 @@ public class PersonServiceImpl implements PersonService {
     private final LocationRepository locationRepository;
 
     @Override
-
     public Person add(final Person person) {
         if (personRepository.findPersonByPassportID(person.getPassportID()).isPresent()) {
             log.warn("Person with passportID: {} already exist", person.getPassportID());
