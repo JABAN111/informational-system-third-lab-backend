@@ -63,10 +63,8 @@ public class ImportProcessingImpl implements ImportProcessing {
                 sgList.add(sg);
             }
 
-            if (mode == ImportMode.ASYNC)
+            if (mode == ImportMode.ASYNC) {
                 coordinateService.addAll(coordinatesList);
-            if (mode == ImportMode.SEQUENTIAL) {
-                log.info("flag for sequential mode");
             }
             locationService.addAll(locationList);
             personService.addAll(pList);
