@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 public class ImportAsyncUncaughtExceptionHandler implements AsyncUncaughtExceptionHandler {
     @Override
     public void handleUncaughtException(Throwable ex, Method method, Object... params) {
-        log.error("Validation failed: {}", ex.getMessage());
+        log.error("Validation failed: {}, trace: ", ex.getMessage());
     }
 
 }

@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User createNewUser(final User user) {
+    public User add(final User user) {
         user.setPassword(user.getPassword());
 
         User newUser = userRepository.save(user);

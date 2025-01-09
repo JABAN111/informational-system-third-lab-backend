@@ -88,14 +88,17 @@ public class JwtServiceImpl implements JwtService {
     private String generateToken(final Map<String, Object> extraClaims,
                                  final UserDetails userDetails) {
         final int minute = 60_000;
-        final int hour = minute * 360;
+        final int hour = minute * 60;
+        final long day = hour * 24;
+        final long month = day * 30;
+        final long year = day * 365;
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(
                         new Date(System.currentTimeMillis()
-                                + hour)//час
+                                + year)//час
                 ).signWith(getSigningKey()).compact();
     }
 

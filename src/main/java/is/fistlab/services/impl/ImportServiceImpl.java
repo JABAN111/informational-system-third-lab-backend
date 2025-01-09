@@ -1,7 +1,6 @@
 package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.User;
-import is.fistlab.database.repositories.HistoryRepository;
 import is.fistlab.database.repositories.LocationRepository;
 import is.fistlab.database.repositories.PersonRepository;
 import is.fistlab.database.repositories.StudyGroupRepository;
@@ -30,20 +29,22 @@ public class ImportServiceImpl implements ImportService {
     private final ImportProcessing importProcessing;
     private static final Timestamp TIME_MARK = Timestamp.valueOf("2024-12-12 00:00:00");
     private final LocationRepository locationRepository;
-    private final HistoryRepository historyRepository;
 
     @Override
     @Transactional
-    public void importFile(MultipartFile file, User user, Timestamp userTimestamp) {
+    public String importFile(MultipartFile file, User user, Timestamp userTimestamp) {
         List<StudyGroupDto> studyGroupDtos = CSVParser.getStudyGroupsFromFile(getFile(file));
+        String result;
         if(userTimestamp.before(TIME_MARK)) {
             log.debug("user send to seq");
+            result = "Сохраняли в синхронном режиме";
             importProcessing.runSeq(studyGroupDtos, user);
         }else{
             log.debug("user send to async");
+            result = "Сохраняли в асинхронном режиме";
             importProcessing.runAsync(studyGroupDtos, user);
         }
-
+        return result;
     }
 
     //стоит выпилить, но просто удобно)

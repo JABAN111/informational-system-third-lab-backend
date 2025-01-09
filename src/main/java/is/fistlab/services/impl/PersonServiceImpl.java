@@ -30,7 +30,7 @@ public class PersonServiceImpl implements PersonService {
     private final LocationRepository locationRepository;
 
     @Override
-    public Person createPerson(final Person person) {
+    public Person add(final Person person) {
         if (personRepository.findPersonByPassportID(person.getPassportID()).isPresent()) {
             log.warn("Person with passportID: {} already exist", person.getPassportID());
             throw new PersonNotUnique("Паспорт пользователя должен быть уникальным");
@@ -43,7 +43,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    @Transactional
+//    @Transactional
     public List<Person> addAll(List<Person> persons) {
         var savedList = personRepository.saveAll(persons);
         log.info("Saved {} persons", savedList.size());
@@ -67,6 +67,11 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Page<Person> getAllPersons(final Pageable pageable) {
         return personRepository.findAll(pageable);
+    }
+
+    @Override
+    public boolean isExist(Person person) {
+        return personRepository.findPersonByPassportID(person.getPassportID()).isPresent();
     }
 
     @Override

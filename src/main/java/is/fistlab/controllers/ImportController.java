@@ -1,17 +1,7 @@
 package is.fistlab.controllers;
 
-import is.fistlab.SequentialQueueProcessor;
-import is.fistlab.database.entities.User;
-import is.fistlab.database.repositories.LocationRepository;
-import is.fistlab.database.repositories.PersonRepository;
-import is.fistlab.database.repositories.StudyGroupRepository;
 import is.fistlab.services.AuthService;
 import is.fistlab.services.ImportService;
-import is.fistlab.services.PersonService;
-import is.fistlab.services.StudyGroupService;
-import is.fistlab.services.impl.AuthServiceImpl;
-import is.fistlab.services.impl.ssyncProcessing.ImportProcessingImpl;
-import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 
@@ -37,9 +26,10 @@ public class ImportController {
     @PostMapping("/csv")
     public ResponseEntity<Response<Integer>> importStudyGroups(@RequestParam("file") final MultipartFile file, @RequestParam("userTimestamp") final Timestamp userTimestamp) throws IOException {
         var currentUser = authService.getCurrentUser();
-
-        importService.importFile(file, currentUser, userTimestamp);
-        return ResponseEntity.ok(new Response<>("Сохранение начали"));
+        log.info("User {} started import", currentUser);
+        var result = importService.importFile(file, currentUser, userTimestamp);
+        log.info("finished import");
+        return ResponseEntity.ok(new Response<>("Сохранение начали " + result));
     }
 
     @PostMapping("/drop")

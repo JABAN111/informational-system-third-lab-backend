@@ -106,7 +106,6 @@ public class StudyGroupMapper {
             throw new InvalidFieldException("Администратор группы должен быть указан");
         }
 
-//        studyGroup.setImportTimeStamp(dto.getImportTimeStamp());
         Person person = PersonMapper.toEntity(dto.getGroupAdmin());
         studyGroup.setGroupAdmin(person);
 

@@ -27,7 +27,6 @@ public class SequentialQueueProcessor {
                     } catch (Exception taskException) {
                         if(taskException instanceof InvalidFieldException) {
                             log.error("Invalid field: {}", taskException.getMessage());
-                            break;
                         }
 
                         log.error("Error occurred during task execution: ", taskException);

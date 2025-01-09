@@ -10,7 +10,6 @@ import lombok.ToString;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Data
@@ -26,7 +25,7 @@ public class StudyGroup implements CreatorAware {
     @Column(nullable = false)
     private String name; // Поле не может быть null, Строка не может быть пустой
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL) // Обязательная связь
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id", nullable = false)
     private Coordinates coordinates; // Поле не может быть null
 
@@ -76,8 +75,6 @@ public class StudyGroup implements CreatorAware {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_update_user_id")
     private User lastUpdate;
-
-//    private Timestamp importTimeStamp;
 
     @PrePersist
     protected void onCreate() {

@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface PersonService {
     Person updatePerson(Person person);
-    Person createPerson(Person person);
+    Person add(Person person);
     List<Person> addAll(List<Person> persons);
     void deletePersonByPassportId(String passportId);
     Page<Person> getAllPersons(Pageable pageable);
+    boolean isExist(Person person);
 }

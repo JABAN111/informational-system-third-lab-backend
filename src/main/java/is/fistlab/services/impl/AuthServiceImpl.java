@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExist("Пользователь с таким ником уже существует");
         }
 
-        var savedUser = userService.createNewUser(user);
+        var savedUser = userService.add(user);
 
         if (UserRole.valueOf(requestDto.getRole()) == UserRole.ROLE_ADMIN) {
             savedUser = setAdminOrAddToWaitList(savedUser);

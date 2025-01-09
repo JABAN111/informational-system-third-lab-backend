@@ -7,6 +7,6 @@ import java.sql.Timestamp;
 
 public interface ImportService {
 
-    void importFile(MultipartFile file, User user, Timestamp timestamp);
+    String importFile(MultipartFile file, User user, Timestamp timestamp);
     void dropAll();
 }

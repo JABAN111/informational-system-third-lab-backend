@@ -35,7 +35,7 @@ public class PersonController {
     public ResponseEntity<Response<Person>> createPerson(@RequestBody final PersonDto dto) {
 
         Person person = PersonMapper.toEntity(dto);
-        personService.createPerson(person);
+        personService.add(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new Response<>("Пользователь успешно создан", person)
         );
