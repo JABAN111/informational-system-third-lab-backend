@@ -5,13 +5,15 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @Component
 @Slf4j
 public class ImportAsyncUncaughtExceptionHandler implements AsyncUncaughtExceptionHandler {
     @Override
     public void handleUncaughtException(Throwable ex, Method method, Object... params) {
-        log.error("Validation failed: {}", ex.getMessage());
+        log.error("Validation failed: {}, trace: ", ex.getMessage());
+        ex.printStackTrace();
     }
 
 }

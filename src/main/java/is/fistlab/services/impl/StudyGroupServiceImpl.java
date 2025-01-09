@@ -10,6 +10,7 @@ import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupAlreadyExistException;
 import is.fistlab.exceptions.dataBaseExceptions.studyGroup.StudyGroupNotExistException;
 import is.fistlab.mappers.StudyGroupMapper;
+import is.fistlab.services.PersonService;
 import is.fistlab.services.StudyGroupService;
 import is.fistlab.utils.AuthenticationUtils;
 import lombok.AllArgsConstructor;
@@ -25,12 +26,13 @@ import java.util.*;
 @Slf4j
 @Service
 @AllArgsConstructor
-@Transactional
+//@Transactional
 public class StudyGroupServiceImpl implements StudyGroupService {
 
     private final StudyGroupRepository studyGroupRepository;
     private final AuthenticationUtils authenticationUtils;
     private final CoordinatesRepository coordinatesRepository;
+    private final PersonService personService;
 
     @Override
     public StudyGroup add(final StudyGroupDto dto) {
@@ -40,29 +42,28 @@ public class StudyGroupServiceImpl implements StudyGroupService {
             log.warn("Study group with id {} already exists", studyGroupToSave.getId());
             throw new StudyGroupAlreadyExistException("Study group with id " + studyGroupToSave.getId() + " already exists");
         }
+
+        if(!personService.isExist(studyGroupToSave.getGroupAdmin())){
+            var createdPerson = personService.add(studyGroupToSave.getGroupAdmin());
+            studyGroupToSave.setGroupAdmin(createdPerson);
+        }
+
         var currentUser = authenticationUtils.getCurrentUserFromContext();
         studyGroupToSave.setCreator(currentUser);
         studyGroupToSave.setLastUpdate(currentUser);
-        var savedStudyGroup = studyGroupRepository.save(studyGroupToSave);
-//        log.info("Study group created: {}", studyGroupToSave);
-        return savedStudyGroup;
+        return studyGroupRepository.save(studyGroupToSave);
     }
     @Override
     public StudyGroup add(final StudyGroup group) {
-//        StudyGroup studyGroupToSave = StudyGroupMapper.toEntity(dto);
 
         if (Objects.nonNull(group.getId()) && studyGroupRepository.existsById(group.getId())) {
-//            log.warn("Study group with id {} already exists", group.getId());
             throw new StudyGroupAlreadyExistException("Study group with id " + group.getId() + " already exists");
         }
-//        var currentUser = authenticationUtils.getCurrentUserFromContext();
-        var savedStudyGroup = studyGroupRepository.save(group);
-//        log.info("Study group created: {}", group);
-        return savedStudyGroup;
+        return studyGroupRepository.save(group);
     }
 
     @Override
-    @Transactional
+//    @Transactional
     public List<StudyGroup> addAll(List<StudyGroup> studyGroupList) {
         var savedList = studyGroupRepository.saveAll(studyGroupList);
         log.info("Study groups added: {}", studyGroupList.size());

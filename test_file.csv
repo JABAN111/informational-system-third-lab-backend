@@ -1,0 +1,2 @@
+name,coordinate_x,coordinate_y,creation_date,student_count,expelledStudents,transferredStudents,formOfEducation,shouldBeExpelled,averageMark,semesterEnum,personName,personEyeColor,personHairColor,personLocationX,personLocationY,personLocationZ,locationName,personHeight,personWeight,personNationality,passportID
+name,2,25.1,12.12.2025,31,5,1,FULL_TIME_EDUCATION,1,2.5,SECOND,jorik,GREEN,GREEN,12,2.5,3,имя_локации,2,25,RUSSIA,dsajnojndasjndnjasjndasnjdsad
