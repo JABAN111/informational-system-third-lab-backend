@@ -6,18 +6,18 @@ import is.fistlab.services.LocationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
-//@Transactional
 @Service
 public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
 
-//    @Transactional
+    @Transactional
     @Override
     public Location add(Location location) {
         var result = locationRepository.save(location);
@@ -26,7 +26,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<Location> addAll(List<Location> locations) {
         var result = locationRepository.saveAll(locations);
         log.info("Created {} locations", result.size());

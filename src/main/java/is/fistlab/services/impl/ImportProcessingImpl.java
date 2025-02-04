@@ -5,13 +5,14 @@ import is.fistlab.database.entities.*;
 import is.fistlab.dto.StudyGroupDto;
 import is.fistlab.mappers.StudyGroupMapper;
 import is.fistlab.services.*;
-import jakarta.persistence.EntityManager;
+import is.fistlab.services.minio.MinioService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,37 +24,36 @@ public class ImportProcessingImpl implements ImportProcessing {
     private final SequentialQueueProcessor sequentialQueueProcessor;
     private final PersonService personService;
     private final StudyGroupService studyGroupService;
-    private final EntityManager em;
     private final LocationService locationService;
     private final CoordinateService coordinateService;
     private final OperationService operationService;
+    private final MinioService minioService;
 
     @Async
     @Override
-    public void runAsync(List<StudyGroupDto> studyGroupList, User user) {
-        runImport(studyGroupList, user, ImportMode.ASYNC);
+    public void runAsync(List<StudyGroupDto> studyGroupList, User user, File file) {
+        runImportAndUpload(studyGroupList, user, ImportMode.ASYNC, file);
     }
 
     @Override
-    public void runSeq(List<StudyGroupDto> studyGroupList, User user) {
-        sequentialQueueProcessor.submitTask(() -> runImport(studyGroupList, user, ImportMode.SEQUENTIAL));
+    public void runSeq(List<StudyGroupDto> studyGroupList, User user, File file) {
+        sequentialQueueProcessor.submitTask(() -> runImportAndUpload(studyGroupList, user, ImportMode.SEQUENTIAL, file));
     }
 
-    public void runImport(List<StudyGroupDto> studyGroupList, User user, ImportMode mode) {
+    public void runImportAndUpload(List<StudyGroupDto> studyGroupList, User user, ImportMode mode, File file) {
         List<StudyGroup> sgList = new ArrayList<>(studyGroupList.size());
         List<Person> pList = new ArrayList<>(studyGroupList.size());
         List<Location> locationList = new ArrayList<>(studyGroupList.size());
         List<Coordinates> coordinatesList = new ArrayList<>(studyGroupList.size());
-        var operation = new Operation();
+        Operation operation = new Operation();
         operation.setUser(user);
         operation.setMode(mode);
         operation.setIsFinished(false);
-
+        String fileNameForMinio = null;
         try {
 
             for (var sgDto : studyGroupList) {
                 var sg = StudyGroupMapper.toEntity(sgDto);
-
                 sg.setCreator(user);
                 sg.getGroupAdmin().setCreator(user);
 
@@ -70,17 +70,28 @@ public class ImportProcessingImpl implements ImportProcessing {
             personService.addAll(pList);
             var listSavedSg = studyGroupService.addAll(sgList);
 
+            fileNameForMinio = minioService.uploadFile(user.getUsername(), file.getName(), file);
             operation.setIsFinished(true);
             operation.setAmountOfObjectSaved(listSavedSg.size());
             operationService.add(operation);
 
-            log.info("import operation finished for thread: {}", Thread.currentThread().getName());
 
         } catch (RuntimeException e) {
-            operation.setIsFinished(false);
+            log.error("Error during import operation, rolling back...", e);
+
+            if (fileNameForMinio != null) {
+                try {
+                    minioService.removeFile(user.getUsername(), file.getName());
+                    log.info("File removed from MinIO due to failure: {}", fileNameForMinio);
+                } catch (Exception ex) {
+                    log.error("Error removing file from MinIO: {}", fileNameForMinio, ex);
+                }
+            }
+
+            operation.setIsFinished(true);
             operationService.add(operation);
-            log.error("Operation failed for thread: {}", Thread.currentThread().getName());
-            throw e;
+
+            throw new RuntimeException("Operation failed, all changes rolled back.", e);
         }
     }
 

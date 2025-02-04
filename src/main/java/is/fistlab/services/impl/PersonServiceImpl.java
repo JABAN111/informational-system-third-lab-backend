@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,7 +22,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
 @AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
@@ -30,6 +30,7 @@ public class PersonServiceImpl implements PersonService {
     private final LocationRepository locationRepository;
 
     @Override
+    @Transactional
     public Person add(final Person person) {
         if (personRepository.findPersonByPassportID(person.getPassportID()).isPresent()) {
             log.warn("Person with passportID: {} already exist", person.getPassportID());
@@ -43,7 +44,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-//    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<Person> addAll(List<Person> persons) {
         var savedList = personRepository.saveAll(persons);
         log.info("Saved {} persons", savedList.size());
@@ -51,6 +52,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @Transactional
     public void deletePersonByPassportId(final String passportId) {
         Optional<Person> deletingPerson = personRepository.findByPassportID(passportId);
 
@@ -65,16 +67,20 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @Transactional
     public Page<Person> getAllPersons(final Pageable pageable) {
         return personRepository.findAll(pageable);
     }
 
     @Override
+    @Transactional
     public boolean isExist(Person person) {
         return personRepository.findPersonByPassportID(person.getPassportID()).isPresent();
     }
 
     @Override
+    @Transactional
+
     public Person updatePerson(final Person person) {
         if(personRepository.findPersonByPassportID(person.getPassportID()).isEmpty()) {
             log.error("Person with id: {} does not exist, update is impossible", person.getPassportID());

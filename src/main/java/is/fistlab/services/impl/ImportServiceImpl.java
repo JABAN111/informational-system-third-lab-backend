@@ -32,32 +32,34 @@ public class ImportServiceImpl implements ImportService {
 
     @Override
     @Transactional
-    public String importFile(MultipartFile file, User user, Timestamp userTimestamp) {
+    public String importFile(MultipartFile file, User user, Timestamp userTimestamp) throws IOException {
+//        MultipartFile copiedFile = new ByteArrayMultipartFile(file);
+
         List<StudyGroupDto> studyGroupDtos = CSVParser.getStudyGroupsFromFile(getFile(file));
         String result;
-        if(userTimestamp.before(TIME_MARK)) {
+        if (userTimestamp.before(TIME_MARK)) {
             log.debug("user send to seq");
             result = "Сохраняли в синхронном режиме";
-            importProcessing.runSeq(studyGroupDtos, user);
-        }else{
+            importProcessing.runSeq(studyGroupDtos, user, getFile(file));
+        } else {
             log.debug("user send to async");
             result = "Сохраняли в асинхронном режиме";
-            importProcessing.runAsync(studyGroupDtos, user);
+            importProcessing.runAsync(studyGroupDtos, user, getFile(file));
         }
         return result;
     }
 
     //стоит выпилить, но просто удобно)
     @Transactional
-    public void dropAll(){
+    public void dropAll() {
         studyGroupRepository.deleteAll();
         personRepository.deleteAll();
         locationRepository.deleteAll();
     }
 
     private File getFile(MultipartFile multipartFile) {
-        try (InputStream inputStream = multipartFile.getInputStream()){
-            File tempFile = File.createTempFile("uploaded-", ".csv");
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            File tempFile = File.createTempFile(multipartFile.getName(), ".csv");
             tempFile.deleteOnExit();
 
             try (OutputStream outputStream = new FileOutputStream(tempFile)) {

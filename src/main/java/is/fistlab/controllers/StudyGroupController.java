@@ -4,7 +4,9 @@ import is.fistlab.database.entities.*;
 import is.fistlab.database.enums.FormOfEducation;
 import is.fistlab.database.enums.Semester;
 import is.fistlab.dto.StudyGroupDto;
+import is.fistlab.services.AuthService;
 import is.fistlab.services.StudyGroupService;
+import is.fistlab.services.minio.MinioService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class StudyGroupController {
     private final StudyGroupService studyGroupService;
+    private final MinioService minioService;
+    private final AuthService authService;
 
     @PostMapping("/create-new-group")
     public ResponseEntity<Response<StudyGroup>> createStudyGroup(@RequestBody final StudyGroupDto dto) {
@@ -134,6 +138,11 @@ public class StudyGroupController {
         Page<StudyGroup> studyGroupPage = studyGroupService.getPagedResult(studyGroups, pageable);
 
         return ResponseEntity.ok(new Response<>(studyGroupPage));
+    }
+
+    @GetMapping("/get-files")
+    public List<String> getFilesFromS3() {
+        return minioService.listFilesWithPrefix(authService.getUsername());
     }
 
 }

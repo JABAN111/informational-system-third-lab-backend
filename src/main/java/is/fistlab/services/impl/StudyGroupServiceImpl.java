@@ -14,6 +14,7 @@ import is.fistlab.services.PersonService;
 import is.fistlab.services.StudyGroupService;
 import is.fistlab.utils.AuthenticationUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Propagation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -63,7 +64,7 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     }
 
     @Override
-//    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<StudyGroup> addAll(List<StudyGroup> studyGroupList) {
         var savedList = studyGroupRepository.saveAll(studyGroupList);
         log.info("Study groups added: {}", studyGroupList.size());
