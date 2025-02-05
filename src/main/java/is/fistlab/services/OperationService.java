@@ -7,4 +7,5 @@ import java.util.List;
 public interface OperationService {
     List<Operation> addAll(List<Operation> operations);
     Operation add(Operation operation);
+    List<Operation> getAll();
 }

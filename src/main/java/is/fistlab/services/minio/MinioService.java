@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface MinioService {
     String uploadFile(String username, final String filename, final File byteContent);
-    void downloadFile(String userId, String fileName);
+    byte[] downloadFile(String fileName);
     void removeFile(String userId, String fileName);
     List<String> listFilesWithPrefix(String username);
     List<String> listFilesWithoutPrefix();

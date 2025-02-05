@@ -8,9 +8,13 @@ import is.fistlab.services.*;
 import is.fistlab.services.minio.MinioService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 @AllArgsConstructor
 public class ImportProcessingImpl implements ImportProcessing {
     private final SequentialQueueProcessor sequentialQueueProcessor;
@@ -28,6 +32,8 @@ public class ImportProcessingImpl implements ImportProcessing {
     private final CoordinateService coordinateService;
     private final OperationService operationService;
     private final MinioService minioService;
+    private final PlatformTransactionManager transactionManager;
+
 
     @Async
     @Override
@@ -39,7 +45,6 @@ public class ImportProcessingImpl implements ImportProcessing {
     public void runSeq(List<StudyGroupDto> studyGroupList, User user, File file) {
         sequentialQueueProcessor.submitTask(() -> runImportAndUpload(studyGroupList, user, ImportMode.SEQUENTIAL, file));
     }
-
     public void runImportAndUpload(List<StudyGroupDto> studyGroupList, User user, ImportMode mode, File file) {
         List<StudyGroup> sgList = new ArrayList<>(studyGroupList.size());
         List<Person> pList = new ArrayList<>(studyGroupList.size());
@@ -72,10 +77,9 @@ public class ImportProcessingImpl implements ImportProcessing {
 
             fileNameForMinio = minioService.uploadFile(user.getUsername(), file.getName(), file);
             operation.setIsFinished(true);
+            operation.setFilename(file.getName());
             operation.setAmountOfObjectSaved(listSavedSg.size());
             operationService.add(operation);
-
-
         } catch (RuntimeException e) {
             log.error("Error during import operation, rolling back...", e);
 
@@ -88,7 +92,7 @@ public class ImportProcessingImpl implements ImportProcessing {
                 }
             }
 
-            operation.setIsFinished(true);
+            operation.setIsFinished(false);
             operationService.add(operation);
 
             throw new RuntimeException("Operation failed, all changes rolled back.", e);

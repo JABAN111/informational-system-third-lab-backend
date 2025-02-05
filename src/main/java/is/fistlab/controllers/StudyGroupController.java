@@ -12,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +145,19 @@ public class StudyGroupController {
     @GetMapping("/get-files")
     public List<String> getFilesFromS3() {
         return minioService.listFilesWithPrefix(authService.getUsername());
+    }
+
+    @GetMapping("/get-file/{filename}")
+    public ResponseEntity<byte[]> getFileFromS3(@PathVariable final String filename) throws IOException {
+        var processedFilename = filename.replaceAll("___","/");
+        var result = minioService.downloadFile(processedFilename);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(result);
     }
 
 }

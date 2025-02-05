@@ -69,29 +69,32 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public void downloadFile(final String username, final String filename) {
-        String filenameForStoring = getNewFileName(username, filename);
+    public byte[] downloadFile(final String filename) {
         try {
             GetObjectArgs args = GetObjectArgs.builder()
                     .bucket(BUCKET_NAME)
-                    .object(filenameForStoring)
+                    .object(filename)
                     .build();
 
             InputStream fileStream = minioClient.getObject(args);
-            String content = new String(fileStream.readAllBytes(), StandardCharsets.UTF_8);
-            log.info("File successfully downloaded: {}", filenameForStoring);
+            byte[] fileBytes = fileStream.readAllBytes();
+
             fileStream.close();
+
+            log.info("File successfully downloaded: {}", filename);
+
+            return fileBytes;
         } catch (MinioException e) {
-            log.error("Minio error occurred while downloading file: {}", filenameForStoring, e);
+            log.error("Minio error occurred while downloading file: {}", filename, e);
             throw new RuntimeException("Minio error occurred while downloading file", e);
         } catch (IOException e) {
-            log.error("IO error occurred while downloading file: {}", filenameForStoring, e);
+            log.error("IO error occurred while downloading file: {}", filename, e);
             throw new RuntimeException("IO error occurred while downloading file", e);
         } catch (InvalidKeyException e) {
-            log.error("Invalid key error occurred while downloading file: {}", filenameForStoring, e);
+            log.error("Invalid key error occurred while downloading file: {}", filename, e);
             throw new RuntimeException("Invalid key error occurred while downloading file", e);
         } catch (NoSuchAlgorithmException e) {
-            log.error("No such algorithm error occurred while downloading file: {}", filenameForStoring, e);
+            log.error("No such algorithm error occurred while downloading file: {}", filename, e);
             throw new RuntimeException("No such algorithm error occurred while downloading file", e);
         }
     }

@@ -4,6 +4,8 @@ import is.fistlab.services.impl.ImportProcessingImpl;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 @Entity
 public class Operation {
@@ -25,4 +27,13 @@ public class Operation {
     @Enumerated(EnumType.STRING)
     @Column(name = "mode")
     private ImportProcessingImpl.ImportMode mode;
+
+    private String filename;
+
+    private Timestamp timestamp;
+
+    @PrePersist
+    public void prePersist() {
+        timestamp = new Timestamp(System.currentTimeMillis());
+    }
 }

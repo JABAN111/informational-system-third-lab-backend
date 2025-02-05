@@ -2,6 +2,7 @@ package is.fistlab.services.impl;
 
 import is.fistlab.database.entities.Operation;
 import is.fistlab.database.repositories.OperationRepository;
+import is.fistlab.services.AuthService;
 import is.fistlab.services.OperationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OperationServiceImpl implements OperationService {
     private final OperationRepository operationRepository;
+    private final AuthService authService;
 
 
     @Override
@@ -28,6 +30,11 @@ public class OperationServiceImpl implements OperationService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Operation add(Operation operation) {
         return operationRepository.save(operation);
+    }
+
+    @Override
+    public List<Operation> getAll() {
+        return operationRepository.findAllByUser(authService.getCurrentUser());
     }
 
 
