@@ -8,13 +8,11 @@ import is.fistlab.services.*;
 import is.fistlab.services.minio.MinioService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.File;
 import java.util.ArrayList;

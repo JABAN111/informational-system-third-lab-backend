@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class MinioServiceImpl implements MinioService {
 
     public String uploadFile(final String username, final String filename, final File file) {
 
-        String filenameForStoring = getNewFileName(username, filename);
+        final String filenameForStoring = getNewFileName(username, filename);
 
         try (InputStream fileStream = new FileInputStream(file)) {
             PutObjectArgs args = PutObjectArgs.builder()
@@ -110,9 +109,11 @@ public class MinioServiceImpl implements MinioService {
                     .build();
             minioClient.removeObject(args);
             log.info("File successfully removed: {}", filenameForStoring);
-        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
-                 NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
-                 InternalException e) {
+        } catch (ServerException | InsufficientDataException
+                 | ErrorResponseException | IOException
+                 | NoSuchAlgorithmException | InvalidKeyException
+                 | InvalidResponseException | XmlParserException
+                 | InternalException e) {
             throw new RuntimeException(e);
         }
     }

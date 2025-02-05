@@ -111,7 +111,6 @@
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
-        <module name="MemberName"/>
         <module name="MethodName"/>
         <module name="PackageName"/>
         <module name="ParameterName"/>
@@ -149,7 +148,6 @@
         <!-- Modifier Checks                                    -->
         <!-- See https://checkstyle.org/checks/modifier/index.html -->
         <module name="ModifierOrder"/>
-        <module name="RedundantModifier"/>
 
         <!-- Checks for blocks. You know, those {}'s         -->
         <!-- See https://checkstyle.org/checks/blocks/index.html -->
